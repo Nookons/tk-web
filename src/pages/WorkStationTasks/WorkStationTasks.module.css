@@ -1,0 +1,11 @@
+
+.Main {
+
+}
+
+.Input_body {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 14px;
+}

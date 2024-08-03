@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="bf85fa37-ba31-4855-bf1f-a13f544e11d1" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/pages/Employer/Employer.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/pages/WorkStationTasks/WorkStationTasks.module.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/setupProxy.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/types/Shelfs.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/imbd.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hs_err_pid5688.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/public/manifest.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/robots.txt" beforeDir="false" afterPath="$PROJECT_DIR$/public/robots.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/assets/logotype.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/assets/sign-in-poster.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/AppRoutes.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/AppRoutes.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Footer/Footer.module.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Footer/Footer.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Footer/Footer.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Header/Header.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Header/Header.module.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Header/Header.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Header/Header.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/declarations.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/declarations.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/firebaseConfig.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/firebaseConfig.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Companies/Companies.module.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Companies/Companies.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Companies/CompanyMovies.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Countries/Countries.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Home/Home.module.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Home/Home.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Home/Home.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Home/Menu/Menu.module.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Home/Menu/Menu.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Home/Menu/Search.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Home/info/Info.module.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Home/info/Info.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Home/movie/Movie.module.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Home/movie/Movie.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Home/movie/MovieDialog.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Movie/Movie.module.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Movie/Movie.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Movie/MovieOptions.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Movie/Reviews.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Movie/SimilarMovie.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Movie/Trailer.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/User/SignIn/SignIn.module.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/User/SignIn/SignIn.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/User/SignUp/SignUp.module.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/User/SignUp/SignUp.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/process.env" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/store/reducers/movie.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/store/reducers/movie.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/store/reducers/user.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/tsconfig.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/Companies.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/FullMovie.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/Movie.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/Movie.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/Review.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/consts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/consts.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/template.zip" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaScript File" />
+        <option value="com.intellij.reactbuddy.palette" />
+        <option value="com.intellij.reactbuddy.previews" />
+        <option value="com.intellij.reactbuddy.index" />
+        <option value="com.intellij.reactbuddy.useInitial" />
+        <option value="com.intellij.reactbuddy.README" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Nookons&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Nookons/typescript-movies.git&quot;,
+    &quot;accountId&quot;: &quot;7daeb535-a3a6-4cc0-9795-d2bc9c15b589&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 1
+}</component>
+  <component name="ProjectId" id="2k6tSvrHkRxJxw3FyESyj5vK8rO" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Apps/Tk Web&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;npm.start.executor&quot;: &quot;Run&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Apps\\Tk Web\\node_modules\\typescript\\lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="ReactDesignerToolWindowState">
+    <option name="myId2Visible">
+      <map>
+        <entry key="com.intellij.reactbuddy.reactComponents" value="false" />
+        <entry key="com.intellij.reactbuddy.reactInspector" value="false" />
+        <entry key="com.intellij.reactbuddy.storybook" value="false" />
+      </map>
+    </option>
+  </component>
+  <component name="RunManager">
+    <configuration name="start" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="start" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="npm.start" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-WS-241.18034.50" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="bf85fa37-ba31-4855-bf1f-a13f544e11d1" name="Changes" comment="" />
+      <created>1722615857436</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1722615857436</updated>
+      <workItem from="1722615859166" duration="4711000" />
+      <workItem from="1722621326563" duration="17741000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

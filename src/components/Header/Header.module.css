@@ -1,0 +1,22 @@
+
+.Main {
+    padding: 14px;
+    background-color: #ffffff;
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+}
+
+.Logo_body {
+    max-width: 75px;
+}
+.Logo_body img {
+    max-width: 100%;
+    border-radius: 8px;
+}
+
+.Button_body {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+}
