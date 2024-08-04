@@ -16,7 +16,7 @@ import Radio from "antd/es/radio";
 import {PlusOutlined, UploadOutlined} from "@ant-design/icons";
 import dayjs from "dayjs";
 import {db} from "../../firebase";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, arrayUnion} from "firebase/firestore";
 import RobotsList from "./RobotsList";
 
 type OTPProps = GetProps<typeof Input.OTP>;
@@ -63,32 +63,39 @@ const RobotsInspection = () => {
     }
 
     const onSaveClick = async () => {
-        if (robot_id <= 1) {
+        if (!robot_id || robot_id <= 1) {
             message.error("You don't have any robot id");
-            return
-        }
-        if (conditionValue.length < 1) {
-            message.error("You don't have any condition value");
-            return
-        }
-        if (checkDate <= 1) {
-            message.error("You don't have any Date");
-            return
+            return;
         }
 
-        message.info("Okay, here we try to upload you data")
+        if (!conditionValue || conditionValue.length < 1) {
+            message.error("You don't have any condition value");
+            return;
+        }
+
+        if (!checkDate || checkDate <= 1) {
+            message.error("You don't have any Date");
+            return;
+        }
+
+        message.info("Okay, here we try to upload your data");
 
         try {
-            await setDoc(doc(db, "robots_check", robot_id.toString()), {
-                robot_id: robot_id,
+            const data = {
+                condition: conditionValue,
                 date: checkDate,
-                condition: conditionValue
-            });
-            message.success("Robot data was save")
+                robot_id: robot_id
+            };
+
+            await setDoc(doc(db, "robots_check", 'robot_array'), {
+                array: arrayUnion(data)
+            }, { merge: true });
+
+            message.success("Robot data was saved");
         } catch (err) {
             err && message.error(err.toString());
         }
-    }
+    };
 
 
     return (
@@ -108,6 +115,7 @@ const RobotsInspection = () => {
                 <Radio.Group value={conditionValue} onChange={onChangeRadio} buttonStyle="solid">
                     <Radio.Button value="good">Good</Radio.Button>
                     <Radio.Button value="bad">Bad</Radio.Button>
+                    <Radio.Button value="not_inspected">Not inspected</Radio.Button>
                 </Radio.Group>
                 {conditionValue === "bad" &&
                     <Form.Item
@@ -124,7 +132,6 @@ const RobotsInspection = () => {
                 }
                 <Button onClick={onSaveClick} type={"primary"}>Save</Button>
             </Form>
-            <Divider>Robots List</Divider>
             <RobotsList />
         </div>
     );

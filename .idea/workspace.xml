@@ -5,16 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bf85fa37-ba31-4855-bf1f-a13f544e11d1" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/pages/RobotsInspection/RobotsInspection.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/pages/RobotsInspection/RobotsList.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/pages/WorkStationTasks/TableView.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/pages/Home/Home.module.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/pages/Home/TodayWork.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/Employer/Employer.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Employer/Employer.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/WorkStationTasks/WorkStationTasks.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/WorkStationTasks/WorkStationTasks.module.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/WorkStationTasks/WorkStationTasks.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/WorkStationTasks/WorkStationTasks.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/routes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/consts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/consts.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Home/Home.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Home/Home.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/RobotsInspection/RobotsInspection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/RobotsInspection/RobotsInspection.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/RobotsInspection/RobotsList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/RobotsInspection/RobotsList.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,12 +38,12 @@
     &quot;assignee&quot;: &quot;Nookons&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/Nookons/tk-web.git",
-    "accountId": "4a6d2087-ed86-4fe0-8fb8-10be665fb8bf"
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Nookons/tk-web.git&quot;,
+    &quot;accountId&quot;: &quot;7daeb535-a3a6-4cc0-9795-d2bc9c15b589&quot;
   }
-}]]></component>
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 1
 }</component>
@@ -56,21 +52,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "C:/Apps/tk-web",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "npm.start.executor": "Run",
-    "ts.external.directory.path": "C:\\Apps\\tk-web\\node_modules\\typescript\\lib",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Apps/tk-web&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;npm.start.executor&quot;: &quot;Run&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Apps\\tk-web\\node_modules\\typescript\\lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="ReactDesignerToolWindowState">
     <option name="myId2Visible">
       <map>
@@ -115,6 +111,8 @@
       <workItem from="1722615859166" duration="4711000" />
       <workItem from="1722621326563" duration="17741000" />
       <workItem from="1722707557327" duration="20784000" />
+      <workItem from="1722789011572" duration="109000" />
+      <workItem from="1722789138453" duration="10824000" />
     </task>
     <servers />
   </component>
