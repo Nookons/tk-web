@@ -9,3 +9,22 @@
     align-items: center;
     gap: 14px;
 }
+
+.Table_body {
+    border-radius: 8px;
+    margin: 14px 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.Left_side {
+    border: 1px solid #b8b8b8;
+    border-radius: 8px 0 0 8px;
+    padding: 14px;
+}
+
+.Rigth_side {
+    border: 1px solid #b8b8b8;
+    border-radius: 0 8px 8px 0;
+    padding: 14px;
+}

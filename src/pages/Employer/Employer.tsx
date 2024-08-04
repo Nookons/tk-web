@@ -43,6 +43,7 @@ const Employer = () => {
 
                 if (docSnap.exists()) {
                     message.success(`Has employers ${first_name} ${last_name}`);
+                    console.log(docSnap.data());
                     setCurrentEmployer(docSnap.data() as IEmployeeDetails);
                 } else {
                     message.error("No such document")
@@ -56,58 +57,70 @@ const Employer = () => {
         console.log(currentEmployer);
     }, [currentEmployer]);
 
+
     const items: DescriptionsProps['items'] = [
         {
             key: '1',
             label: 'Address',
-            children: `${currentEmployer?.address}`,
+            children: `${currentEmployer?.address ?? 'N/A'}`,
+            span: 2,
         },
         {
             key: '2',
-            label: 'Positon',
-            children: <Badge status="processing" text={currentEmployer?.position} />,
+            label: 'Position',
+            children: <Badge status="success" text={currentEmployer?.position ?? 'N/A'} />,
         },
         {
             key: '3',
-            label: 'country',
-            children: `${currentEmployer?.country}`,
+            label: 'Country',
+            children: `${currentEmployer?.country ?? 'N/A'}`,
         },
         {
             key: '4',
-            label: 'resident_card',
-            children: `${currentEmployer?.resident_card}`,
+            label: 'Resident Card',
+            children: <Badge status="processing" text={currentEmployer?.resident_card ?? 'N/A'} />,
             span: 2
         },
         {
             key: '4',
-            label: 'resident_card_validity',
-            children: `${currentEmployer?.resident_card_validity}`,
+            label: 'Resident Card Validity',
+            children: currentEmployer?.resident_card_validity
+                ? `${dayjs(currentEmployer.resident_card_validity * 1000).format("YYYY-MM-DD")}`
+                : 'N/A',
             span: 2
         },
         {
             key: '5',
-            label: 'birthday_date',
-            children: `${dayjs(currentEmployer?.birthday_date).format("YYYY-MM-DD")} ${dayjs(currentEmployer?.birthday_date).fromNow()}`,
+            label: 'Birthday Date',
+            span: 2,
+            children: currentEmployer?.birthday_date
+                ? `${dayjs(currentEmployer.birthday_date * 1000).format("YYYY-MM-DD")} | ${dayjs(currentEmployer.birthday_date * 1000).fromNow()}`
+                : 'N/A',
         },
         {
             key: '6',
-            label: 'phone',
-            children: `${currentEmployer?.phone}`,
+            label: 'Phone',
+            children: `${currentEmployer?.phone ?? 'N/A'}`,
+            span: 2
         },
         {
             key: '6',
-            label: 'business_trip',
-            children: `${currentEmployer?.business_trip}`,
+            label: 'Business Trip',
+            children: `${currentEmployer?.business_trip ?? 'N/A'}`,
         },
         {
             key: '6',
-            label: 'contract_from',
-            children: `${dayjs(currentEmployer?.contract_from).format("YYYY-MM-DD")} ${dayjs(currentEmployer?.contract_from).fromNow()}`,
+            label: 'Contract From',
+            children: currentEmployer?.contract_from
+                ? `${dayjs(currentEmployer.contract_from * 1000).format("YYYY-MM-DD")}`
+                : 'N/A',
         },
         {
             key: '6',
-            label: 'contract_validity',
-            children: `${currentEmployer?.contract_validity}`,
+            label: 'Contract Validity',
+            children: currentEmployer?.contract_validity
+                ? `${dayjs(currentEmployer.contract_validity * 1000).format("YYYY-MM-DD")}`
+                : 'N/A',
         },
     ];
 

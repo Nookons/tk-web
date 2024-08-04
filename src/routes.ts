@@ -1,7 +1,8 @@
-import {EMPLOYER_ROUTE, HOME_ROUTE, WORK_STATION_TASKS_ROUTE} from "./utils/consts";
+import {EMPLOYER_ROUTE, HOME_ROUTE, ROBOT_INSPECTION_ROUTE, WORK_STATION_TASKS_ROUTE} from "./utils/consts";
 import Home from "./pages/Home/Home";
 import WorkStationTasks from "./pages/WorkStationTasks/WorkStationTasks";
 import Employer from "./pages/Employer/Employer";
+import RobotsInspection from "./pages/RobotsInspection/RobotsInspection";
 
 
 interface Route {
@@ -28,5 +29,10 @@ export const publicRoutes: PublicRoutes = [
         path: EMPLOYER_ROUTE,
         Component: Employer,
         label: 'Employer page',
+    },
+    {
+        path: ROBOT_INSPECTION_ROUTE,
+        Component: RobotsInspection,
+        label: 'Robots Inspection',
     },
 ];

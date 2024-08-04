@@ -6,11 +6,11 @@ import {Breadcrumb, Layout, Menu, MenuProps, theme} from "antd";
 import {
     AliwangwangOutlined,
     AndroidOutlined,
-    FileOutlined, GlobalOutlined,
+    FileOutlined, GlobalOutlined, RobotOutlined, ScheduleOutlined,
     TeamOutlined,
     UserOutlined
 } from "@ant-design/icons";
-import {EMPLOYER_ROUTE, HOME_ROUTE, WORK_STATION_TASKS_ROUTE} from "./utils/consts";
+import {EMPLOYER_ROUTE, HOME_ROUTE, ROBOT_INSPECTION_ROUTE, WORK_STATION_TASKS_ROUTE} from "./utils/consts";
 import Link from "antd/es/typography/Link";
 
 const {Header, Content, Footer, Sider} = Layout;
@@ -54,9 +54,9 @@ const App = () => {
                 const ws_params = new URLSearchParams({})
                 navigate(`${WORK_STATION_TASKS_ROUTE}?${ws_params.toString()}`)
                 break
-            case "workers":
-                const employer_params = new URLSearchParams({})
-                navigate(`${WORK_STATION_TASKS_ROUTE}?${employer_params.toString()}`)
+            case "robots inspection":
+                const robots_params = new URLSearchParams({})
+                navigate(`${ROBOT_INSPECTION_ROUTE}?${robots_params.toString()}`)
                 break
             default:
                 break
@@ -71,23 +71,24 @@ const App = () => {
     }
 
     const items: MenuItem[] = [
-        getItem(<Link onClick={(event) => onMenuItemClick(event)}>Home</Link>, '22', <GlobalOutlined/>),
-        getItem(<Link onClick={(event) => onMenuItemClick(event)}>Robots Inspection</Link>, '1', <AndroidOutlined/>),
-        getItem(<Link onClick={(event) => onMenuItemClick(event)}>WS Tasks</Link>, '2', <AliwangwangOutlined/>),
+        getItem(<Link onClick={(event) => onMenuItemClick(event)}>Home</Link>, '1', <GlobalOutlined/>),
+        getItem(<Link onClick={(event) => onMenuItemClick(event)}>Robots Inspection</Link>, '2', <RobotOutlined />),
+        getItem(<Link onClick={(event) => onMenuItemClick(event)}>WS Tasks</Link>, '3', <AliwangwangOutlined/>),
         getItem('Employers', 'sub1', <TeamOutlined/>, [
-            getItem(<Link onClick={(event) => employerClick(event)}>DMYTRO DEMBOVSKYI</Link>, '3', <UserOutlined/>),
-            getItem(<Link onClick={(event) => employerClick(event)}>SERHII LASHCHUK</Link>, '4', <UserOutlined/>),
-            getItem(<Link onClick={(event) => employerClick(event)}>YAROSLAV TROKHYMCHUK</Link>, '5', <UserOutlined/>),
-            getItem(<Link onClick={(event) => employerClick(event)}>DMITRII ZABIIAKA</Link>, '6', <UserOutlined/>),
-            getItem(<Link onClick={(event) => employerClick(event)}>KOSTIANYN KRYVONIS</Link>, '7', <UserOutlined/>),
-            getItem(<Link onClick={(event) => employerClick(event)}>ANTON SIDORENKO</Link>, '8', <UserOutlined/>),
-            getItem(<Link onClick={(event) => employerClick(event)}>DMYTRO KOLOMIIETS</Link>, '9', <UserOutlined/>),
-            getItem(<Link onClick={(event) => employerClick(event)}>MYKYTA KYRYLOV</Link>, '10', <UserOutlined/>),
-            getItem(<Link onClick={(event) => employerClick(event)}>VLADYSLAV LESIUK</Link>, '11', <UserOutlined/>),
-            getItem(<Link onClick={(event) => employerClick(event)}>DMYTRO PANKIV</Link>, '12', <UserOutlined/>),
-            getItem(<Link onClick={(event) => employerClick(event)}>DENYS KHARYTONCHUK</Link>, '13', <UserOutlined/>),
+            getItem(<Link onClick={(event) => employerClick(event)}>DMYTRO DEMBOVSKYI</Link>, '4', <UserOutlined/>),
+            getItem(<Link onClick={(event) => employerClick(event)}>SERHII LASHCHUK</Link>, '5', <UserOutlined/>),
+            getItem(<Link onClick={(event) => employerClick(event)}>YAROSLAV TROKHYMCHUK</Link>, '6', <UserOutlined/>),
+            getItem(<Link onClick={(event) => employerClick(event)}>DMITRII ZABIIAKA</Link>, '7', <UserOutlined/>),
+            getItem(<Link onClick={(event) => employerClick(event)}>KOSTIANYN KRYVONIS</Link>, '8', <UserOutlined/>),
+            getItem(<Link onClick={(event) => employerClick(event)}>ANTON SIDORENKO</Link>, '9', <UserOutlined/>),
+            getItem(<Link onClick={(event) => employerClick(event)}>DMYTRO KOLOMIIETS</Link>, '10', <UserOutlined/>),
+            getItem(<Link onClick={(event) => employerClick(event)}>MYKYTA KYRYLOV</Link>, '11', <UserOutlined/>),
+            getItem(<Link onClick={(event) => employerClick(event)}>VLADYSLAV LESIUK</Link>, '12', <UserOutlined/>),
+            getItem(<Link onClick={(event) => employerClick(event)}>DMYTRO PANKIV</Link>, '13', <UserOutlined/>),
+            getItem(<Link onClick={(event) => employerClick(event)}>DENYS KHARYTONCHUK</Link>, '14', <UserOutlined/>),
         ]),
-        getItem(<Link onClick={(event) => onMenuItemClick(event)}>Files</Link>, '9', <FileOutlined/>),
+        getItem(<Link onClick={(event) => onMenuItemClick(event)}>Shields</Link>, '15', <ScheduleOutlined />),
+        getItem(<Link onClick={(event) => onMenuItemClick(event)}>Files</Link>, '16', <FileOutlined/>),
     ];
 
     return (
