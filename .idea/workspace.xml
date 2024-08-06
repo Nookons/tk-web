@@ -4,13 +4,23 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="bf85fa37-ba31-4855-bf1f-a13f544e11d1" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/pages/Home/Home.module.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/pages/Home/TodayWork.tsx" afterDir="false" />
+    <list default="true" id="bf85fa37-ba31-4855-bf1f-a13f544e11d1" name="Changes" comment="new">
+      <change afterPath="$PROJECT_DIR$/src/pages/RobotsInspection/RobotsFilter.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/pages/ShieldsScreen/ShieldsScreen.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/pages/SignIn/SignIn.module.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/pages/SignIn/SignIn.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/Home/Home.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Home/Home.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Home/TodayWork.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Home/TodayWork.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pages/RobotsInspection/RobotsInspection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/RobotsInspection/RobotsInspection.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pages/RobotsInspection/RobotsList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/RobotsInspection/RobotsList.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/store/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/store/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/store/reducers/movie.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/store/reducers/Robots.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/Movie.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/Robot.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/consts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/consts.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,7 +51,7 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/Nookons/tk-web.git&quot;,
-    &quot;accountId&quot;: &quot;7daeb535-a3a6-4cc0-9795-d2bc9c15b589&quot;
+    &quot;accountId&quot;: &quot;4a6d2087-ed86-4fe0-8fb8-10be665fb8bf&quot;
   }
 }</component>
   <component name="ProjectColorInfo">{
@@ -113,10 +123,16 @@
       <workItem from="1722707557327" duration="20784000" />
       <workItem from="1722789011572" duration="109000" />
       <workItem from="1722789138453" duration="10824000" />
+      <workItem from="1722877913621" duration="4763000" />
+      <workItem from="1722886386069" duration="18855000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="new" />
+    <option name="LAST_COMMIT_MESSAGE" value="new" />
   </component>
 </project>

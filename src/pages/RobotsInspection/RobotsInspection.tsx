@@ -16,34 +16,20 @@ import Radio from "antd/es/radio";
 import {PlusOutlined, UploadOutlined} from "@ant-design/icons";
 import dayjs from "dayjs";
 import {db} from "../../firebase";
-import { doc, setDoc, arrayUnion} from "firebase/firestore";
+import {doc, setDoc, arrayUnion, updateDoc} from "firebase/firestore";
 import RobotsList from "./RobotsList";
+import {useAppDispatch, useAppSelector} from "../../hooks/storeHooks";
+import {addRobot, removeRobot} from "../../store/reducers/Robots";
 
 type OTPProps = GetProps<typeof Input.OTP>;
 
-const props: UploadProps = {
-    name: 'file',
-    action: 'https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload',
-    headers: {
-        authorization: 'authorization-text',
-    },
-    onChange(info) {
-        if (info.file.status !== 'uploading') {
-            console.log(info.file, info.fileList);
-        }
-        if (info.file.status === 'done') {
-            message.success(`${info.file.name} file uploaded successfully`);
-        } else if (info.file.status === 'error') {
-            message.error(`${info.file.name} file upload failed.`);
-        }
-    },
-};
 
 const RobotsInspection = () => {
-
+    const dispatch = useAppDispatch();
+    const robots_data = useAppSelector(state => state.robots.items)
     const [robot_id, setRobot_id] = useState<number>(0);
     const [conditionValue, setConditionValue] = useState<string>("");
-    const [checkDate, setCheckDate] = useState<number>(0);
+    const [noteValue, setNoteValue] = useState("");
 
     const onChange: OTPProps['onChange'] = (text) => {
         setRobot_id(Number(text));
@@ -57,11 +43,6 @@ const RobotsInspection = () => {
         setConditionValue(e.target.value)
     };
 
-    const onDateChange: DatePickerProps['onChange'] = (date, dateString) => {
-        const timeStamp = dayjs(date).valueOf();
-        setCheckDate(timeStamp);
-    }
-
     const onSaveClick = async () => {
         if (!robot_id || robot_id <= 1) {
             message.error("You don't have any robot id");
@@ -73,27 +54,28 @@ const RobotsInspection = () => {
             return;
         }
 
-        if (!checkDate || checkDate <= 1) {
-            message.error("You don't have any Date");
-            return;
-        }
-
         message.info("Okay, here we try to upload your data");
+        const filtered = robots_data.filter(item => item.robot_id !== robot_id);
 
         try {
-            const data = {
+            const ref = doc(db, "robots_check", "robot_array");
+
+            const template = {
+                robot_id: robot_id,
                 condition: conditionValue,
-                date: checkDate,
-                robot_id: robot_id
-            };
+                date: dayjs().valueOf(),
+                remarks: noteValue,
+            }
 
-            await setDoc(doc(db, "robots_check", 'robot_array'), {
-                array: arrayUnion(data)
-            }, { merge: true });
+            dispatch(addRobot(template));
 
-            message.success("Robot data was saved");
-        } catch (err) {
-            err && message.error(err.toString());
+            await updateDoc(ref, {
+                array: [...filtered, template]
+            });
+            setNoteValue("")
+            message.success("Robot successfully add");
+        } catch (error) {
+            message.error("Failed");
         }
     };
 
@@ -109,30 +91,35 @@ const RobotsInspection = () => {
                 <Form.Item label="Robot ID" name="input">
                     <Input.OTP length={7} formatter={(str) => str.toUpperCase()} {...sharedProps} />
                 </Form.Item>
-                <Form.Item label="Check date" name="datepicker">
-                    <DatePicker onChange={onDateChange}/>
-                </Form.Item>
                 <Radio.Group value={conditionValue} onChange={onChangeRadio} buttonStyle="solid">
                     <Radio.Button value="good">Good</Radio.Button>
                     <Radio.Button value="bad">Bad</Radio.Button>
                     <Radio.Button value="not_inspected">Not inspected</Radio.Button>
                 </Radio.Group>
-                {conditionValue === "bad" &&
-                    <Form.Item
-                        style={{minWidth: "50%"}}
-                        label="Please load picture of problems"
-                        name="upload"
-                        valuePropName="fileList"
-                        getValueFromEvent={(e) => e.fileList} // Ensures that fileList is properly handled
-                    >
-                        <Upload {...props}>
-                            <Button icon={<UploadOutlined/>}>Click to Upload</Button>
-                        </Upload>
-                    </Form.Item>
-                }
                 <Button onClick={onSaveClick} type={"primary"}>Save</Button>
+                {conditionValue === "bad" &&
+                    <div style={{width: '100%', display: 'grid', gridTemplateColumns: "1fr 1fr", alignItems: "center"}}>
+                        <Form.Item
+                            style={{minWidth: "50%"}}
+                            label="Please load picture of problems"
+                            name="upload"
+                            valuePropName="fileList"
+                            getValueFromEvent={(e) => e.fileList} // Ensures that fileList is properly handled
+                        >
+                            <Upload>
+                                <Button icon={<UploadOutlined/>}>Click to Upload</Button>
+                            </Upload>
+                        </Form.Item>
+                        <Input
+                            value={noteValue}
+                            multiple
+                            placeholder={"Please write here notes why robot is broken"}
+                            onChange={(event) => setNoteValue(event.target.value)}
+                        />
+                    </div>
+                }
             </Form>
-            <RobotsList />
+            <RobotsList/>
         </div>
     );
 };

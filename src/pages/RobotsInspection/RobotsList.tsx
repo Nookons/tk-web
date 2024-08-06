@@ -1,62 +1,75 @@
-import React, {useEffect, useState} from 'react';
-import {collection, query, onSnapshot, setDoc, doc, deleteDoc } from "firebase/firestore";
-import {db} from "../../firebase";
-import {Badge, Button, Descriptions, DescriptionsProps, Divider, List, message, Pagination} from "antd";
+import React, { useEffect, useState } from 'react';
+import { collection, query, onSnapshot, setDoc, doc, updateDoc } from "firebase/firestore";
+import { db } from "../../firebase";
+import {Badge, Button, Card, Descriptions, Divider, List, message, Modal, Pagination} from "antd";
 import dayjs from "dayjs";
-import {CheckSquareOutlined, ClockCircleOutlined, CloseCircleOutlined, RobotOutlined} from "@ant-design/icons";
-import Radio from "antd/es/radio";
+import {
+    CheckSquareOutlined,
+    ClockCircleOutlined,
+    CloseCircleOutlined,
+    DeleteOutlined, ExpandAltOutlined,
+    RobotOutlined
+} from "@ant-design/icons";
+import { IRobot } from "../../types/Robot";
+import { useAppDispatch, useAppSelector } from "../../hooks/storeHooks";
+import { removeRobot } from "../../store/reducers/Robots";
+import RobotsFilter from "./RobotsFilter";
 
-interface IRobot {
-    condition: string;
-    date: number;
-    robot_id: number;
+
+const getCondition = (value: string) => {
+    switch (value) {
+        case "good":
+            return <Badge status={"success"} text={"Good"}/>
+        case "bad":
+            return <Badge status={"error"} text={"Have some problems"}/>
+        case "not_inspected":
+            return <Badge status={"processing"} text={"Waiting for inspection"}/>
+        default:
+            return null
+    }
 }
 
 const RobotsList = () => {
-    const [data, setData] = useState<IRobot[] | null>(null);
+    const data = useAppSelector(state => state.robots.items);
+    const dispatch = useAppDispatch();
+
     const [currentPage, setCurrentPage] = useState(1);
-    const [pageSize, setPageSize] = useState(10); // Items per page
+    const [pageSize, setPageSize] = useState(10);
 
+    const [open, setOpen] = useState(false);
+    const [currentRobot, setCurrentRobot] = useState<IRobot | null>(null);
 
-    useEffect(() => {
-        const unsub = onSnapshot(doc(db, "robots_check", "robot_array"), (doc) => {
-            if (doc.exists()){
-                setData(doc.data().array)
+    const [filteredArray, setFilteredArray] = useState<IRobot[] | null>(null);
+
+    const showModal = (item: IRobot) => {
+        setOpen(true);
+        setCurrentRobot(item);
+    };
+
+    const handleOk = async () => {
+        if (currentRobot) {
+            try {
+                const robotId = currentRobot.robot_id;
+                dispatch(removeRobot(robotId));
+                const washingtonRef = doc(db, "robots_check", "robot_array");
+
+                await updateDoc(washingtonRef, {
+                    array: data.filter(item => item.robot_id !== robotId)
+                });
+                message.success("Robot removed successfully");
+            } catch (error) {
+                message.error("Failed to remove robot");
             }
-        });
-    }, []);
-
-    const [not_inspected, setNot_inspected] = useState<IRobot[] | null>(null);
-    const [inspected, setInspected] = useState<IRobot[] | null>(null);
-
-    useEffect(() => {
-        if (data) {
-            const notInspected: IRobot[] = [];
-            const inspected: IRobot[] = [];
-
-            data.forEach(robot => {
-                if (robot.condition === "not_inspected") {
-                    notInspected.push(robot);
-                } else {
-                    inspected.push(robot);
-                }
-            });
-
-            setNot_inspected(notInspected);
-            setInspected(inspected);
         }
-    }, [data]);
+        setOpen(false);
+    };
 
+    const handleCancel = () => {
+        setOpen(false);
+    };
 
-    if (!data) {
-        return null;
-    }
-
-
-
-    // Pagination logic
     const startIndex = (currentPage - 1) * pageSize;
-    const paginatedData = data.slice(startIndex, startIndex + pageSize);
+    const paginatedData = (filteredArray || data).slice(startIndex, startIndex + pageSize);
 
     const handlePageChange = (page: number, pageSize?: number) => {
         setCurrentPage(page);
@@ -65,6 +78,17 @@ const RobotsList = () => {
 
     return (
         <div>
+            <Modal
+                open={open}
+                title="Are you really sure you want to remove the robot?"
+                onOk={handleOk}
+                onCancel={handleCancel}
+                footer={[
+                    <Button key="cancel" onClick={handleCancel}>Cancel</Button>,
+                    <Button key="ok" type="primary" onClick={handleOk}>Ok</Button>,
+                ]}
+            >
+            </Modal>
             <Divider>Robots List</Divider>
             <div style={{
                 display: "flex",
@@ -73,27 +97,20 @@ const RobotsList = () => {
                 gap: 24
             }}>
                 <Pagination
-                    style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}
+                    style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                     current={currentPage}
                     pageSize={pageSize}
-                    total={data.length}
+                    total={filteredArray ? filteredArray.length : data.length}
                     onChange={handlePageChange}
                 />
-                <Radio.Group defaultValue={"all"} buttonStyle="solid">
-                    <Radio.Button value="all"><RobotOutlined/> {data.length.toLocaleString()}</Radio.Button>
-                    <Radio.Button value="inspected"><CheckSquareOutlined/> {inspected?.length.toLocaleString()}
-                    </Radio.Button>
-                    <Radio.Button value="not_inspected"><ClockCircleOutlined/> {not_inspected?.length.toLocaleString()}
-                    </Radio.Button>
-                    <Radio.Button value="bad"><CloseCircleOutlined/> 0</Radio.Button>
-                </Radio.Group>
+                <RobotsFilter data={data} setFilteredArray={setFilteredArray} />
             </div>
             <List
-                style={{marginTop: 24}}
-                bordered
                 dataSource={paginatedData}
+                bordered
+                style={{marginTop: 24}}
                 renderItem={(item, index) => {
-                    const items: DescriptionsProps['items'] = [
+                    const items = [
                         {
                             key: '1',
                             label: 'Robot ID',
@@ -102,25 +119,37 @@ const RobotsList = () => {
                         {
                             key: '2',
                             label: 'Condition',
-                            children: <Badge status={item.condition === "not_inspected" ? "processing" : "success"}
-                                             text={item.condition === "not_inspected" ? "Waiting for inspection" : "Inspected"}/>,
+                            children: getCondition(item.condition),
                         },
                         {
                             key: '3',
-                            label: 'Created at',
-                            children: `${dayjs(item.date).format("YYYY-MM-DD")}`,
+                            label: 'Updated',
+                            children: `${dayjs(item.date).format("dddd, MMMM DD, YYYY [at] HH:mm:ss")}`,
                         },
                         {
                             key: '4',
-                            children: <Button style={{width: "100%"}}>Remove</Button>,
+                            label: 'Notes',
+                            children: `${item.remarks ? item.remarks : "Don't have any notes"}`,
+                        },
+                        {
+                            key: '5',
+                            children: <div style={{
+                                width: "100%",
+                                display: "flex",
+                                justifyContent: "flex-end",
+                                gap: 14
+                            }}>
+                                <Button><ExpandAltOutlined /> Open</Button>
+                                <Button onClick={() => showModal(item)} ><DeleteOutlined /></Button>
+                            </div>,
                         },
                     ];
 
                     return (
-                        <List.Item>
-                            <Descriptions title={`# ${item.robot_id.toString().replace("13", "13-")}`} items={items}/>
+                        <List.Item key={item.robot_id}>
+                            <Descriptions title={`# ${item.robot_id.toString().replace("13", "13-")}`} items={items} />
                         </List.Item>
-                    )
+                    );
                 }}
             />
         </div>
