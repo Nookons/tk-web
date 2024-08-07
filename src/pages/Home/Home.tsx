@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import axios from 'axios';
 import styles from './Home.module.css'
 import dayjs from "dayjs";
-import {Divider} from "antd";
+import {Divider, List} from "antd";
 import TodayWork from "./TodayWork";
 
 const Home: React.FC = () => {
@@ -18,6 +18,12 @@ const Home: React.FC = () => {
                 </div>
                 <div>
                     <Divider>Today tasks...</Divider>
+                    <List
+                        bordered
+                        header={<div>Today tasks</div>}
+                        dataSource={[]}
+                        renderItem={(item) => <List.Item>{item}</List.Item>}
+                    />
                 </div>
             </div>
         </div>

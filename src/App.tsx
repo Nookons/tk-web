@@ -21,6 +21,7 @@ import Link from "antd/es/typography/Link";
 import { useAppDispatch } from "./hooks/storeHooks";
 import { fetchRobots } from "./store/reducers/Robots";
 import SignIn from "./pages/SignIn/SignIn";
+import {fetchEmployers} from "./store/reducers/Employers";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -53,12 +54,11 @@ const App = () => {
 
     useEffect(() => {
         dispatch(fetchRobots());
+        dispatch(fetchEmployers());
     }, [dispatch]);
 
     const onMenuItemClick = (event: React.MouseEvent<HTMLElement>) => {
         const type = event.currentTarget.innerText;
-
-        console.log(type);
 
         switch (type.toLocaleLowerCase()) {
             case "home":
