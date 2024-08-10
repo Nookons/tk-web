@@ -4,15 +4,15 @@ export interface IEmployer {
     address: string;
     birthdayDate: number;
     businessTrip: boolean;
-    contractFrom: number;
-    contractValidity: number;
+    contractDates: number[];
+    forkLiftLicense: boolean;
     country: string;
     driverLicense: boolean;
     firstName: string;
     lastName: string;
     phone: number;
     position: string;
-    residentCard: boolean | "in progress";
-    residentCardValidity: number;
+    residentCard: boolean;
+    residentCardDates: number[];
     scissorLiftLicense: boolean;
 }
