@@ -1,11 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
 import robotsReducer from './reducers/Robots';
 import employersReducer from './reducers/Employers';
+import userReducer from './reducers/User';
 
 const store = configureStore({
     reducer: {
         robots: robotsReducer,
-        employers: employersReducer
+        employers: employersReducer,
+        currentUser: userReducer
     }
 });
 

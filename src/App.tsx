@@ -2,10 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import AppRouter from "./components/AppRoutes";
 import MyHeader from "./components/Header/Header";
-import { Breadcrumb, Layout, Menu, MenuProps, theme } from "antd";
+import { Breadcrumb, Layout, Menu, theme } from "antd";
 import {
     AliwangwangOutlined,
-    AndroidOutlined,
     FileOutlined, GlobalOutlined, RobotOutlined, ScheduleOutlined,
     TeamOutlined,
     UserOutlined
@@ -18,35 +17,39 @@ import {
     WORK_STATION_TASKS_ROUTE
 } from "./utils/consts";
 import Link from "antd/es/typography/Link";
-import { useAppDispatch } from "./hooks/storeHooks";
+import { useAppDispatch, useAppSelector } from "./hooks/storeHooks";
 import { fetchRobots } from "./store/reducers/Robots";
 import SignIn from "./pages/SignIn/SignIn";
-import {fetchEmployers} from "./store/reducers/Employers";
+import { fetchEmployers } from "./store/reducers/Employers";
 
 const { Header, Content, Footer, Sider } = Layout;
 
-type MenuItem = Required<MenuProps>['items'][number];
+type MenuItem = {
+    key: React.Key;
+    icon?: React.ReactNode;
+    children?: MenuItem[];
+    label: React.ReactNode;
+};
 
-function getItem(
+const getItem = (
     label: React.ReactNode,
     key: React.Key,
     icon?: React.ReactNode,
-    children?: MenuItem[],
-): MenuItem {
-    return {
-        key,
-        icon,
-        children,
-        label,
-    } as MenuItem;
-}
+    children?: MenuItem[]
+): MenuItem => ({
+    key,
+    icon,
+    children,
+    label,
+});
 
 const App = () => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
-
+    const employers = useAppSelector(state => state.employers.items);
     const [collapsed, setCollapsed] = useState(false);
 
+    const isCurrentUser = useAppSelector(state => state.currentUser.status)
 
     const {
         token: { colorBgContainer, borderRadiusLG },
@@ -57,65 +60,58 @@ const App = () => {
         dispatch(fetchEmployers());
     }, [dispatch]);
 
-    const onMenuItemClick = (event: React.MouseEvent<HTMLElement>) => {
-        const type = event.currentTarget.innerText;
-
-        switch (type.toLocaleLowerCase()) {
-            case "home":
-                const home_params = new URLSearchParams({});
-                navigate(`${HOME_ROUTE}?${home_params.toString()}`);
+    const handleMenuClick = (key: string) => {
+        switch (key) {
+            case 'home':
+                navigate(HOME_ROUTE);
                 break;
-            case "ws tasks":
-                const ws_params = new URLSearchParams({});
-                navigate(`${WORK_STATION_TASKS_ROUTE}?${ws_params.toString()}`);
+            case 'ws-tasks':
+                navigate(WORK_STATION_TASKS_ROUTE);
                 break;
-            case "robots inspection":
-                const robots_params = new URLSearchParams({});
-                navigate(`${ROBOT_INSPECTION_ROUTE}?${robots_params.toString()}`);
+            case 'robots-inspection':
+                navigate(ROBOT_INSPECTION_ROUTE);
                 break;
-            case "shields":
-                const shields_params = new URLSearchParams({});
-                navigate(`${SHIELDS_SCREEN_ROUTE}?${shields_params.toString()}`);
+            case 'shields':
+                navigate(SHIELDS_SCREEN_ROUTE);
                 break;
             default:
                 break;
         }
     };
 
-    const employerClick = (event: React.MouseEvent<HTMLElement>) => {
-        const type = event.currentTarget.innerText.split(" ");
-
-        const home_params = new URLSearchParams({ first_name: type[0], last_name: type[1] });
-        navigate(`${EMPLOYER_ROUTE}?${home_params.toString()}`);
-    }
+    const handleEmployerClick = (id: string) => {
+        navigate(`${EMPLOYER_ROUTE}?id=${id}`);
+    };
 
     const items: MenuItem[] = [
-        getItem(<Link onClick={(event) => onMenuItemClick(event)}>Home</Link>, '1', <GlobalOutlined />),
-        getItem(<Link onClick={(event) => onMenuItemClick(event)}>Robots Inspection</Link>, '2', <RobotOutlined />),
-        getItem(<Link onClick={(event) => onMenuItemClick(event)}>WS Tasks</Link>, '3', <AliwangwangOutlined />),
-        getItem('Employers', 'sub1', <TeamOutlined />, [
-            getItem(<Link onClick={(event) => employerClick(event)}>DMYTRO DEMBOVSKYI</Link>, '4', <UserOutlined />),
-            getItem(<Link onClick={(event) => employerClick(event)}>SERHII LASHCHUK</Link>, '5', <UserOutlined />),
-            getItem(<Link onClick={(event) => employerClick(event)}>YAROSLAV TROKHYMCHUK</Link>, '6', <UserOutlined />),
-            getItem(<Link onClick={(event) => employerClick(event)}>DMITRII ZABIIAKA</Link>, '7', <UserOutlined />),
-            getItem(<Link onClick={(event) => employerClick(event)}>KOSTIANYN KRYVONIS</Link>, '8', <UserOutlined />),
-            getItem(<Link onClick={(event) => employerClick(event)}>ANTON SIDORENKO</Link>, '9', <UserOutlined />),
-            getItem(<Link onClick={(event) => employerClick(event)}>DMYTRO KOLOMIIETS</Link>, '10', <UserOutlined />),
-            getItem(<Link onClick={(event) => employerClick(event)}>MYKYTA KYRYLOV</Link>, '11', <UserOutlined />),
-            getItem(<Link onClick={(event) => employerClick(event)}>VLADYSLAV LESIUK</Link>, '12', <UserOutlined />),
-            getItem(<Link onClick={(event) => employerClick(event)}>DMYTRO PANKIV</Link>, '13', <UserOutlined />),
-            getItem(<Link onClick={(event) => employerClick(event)}>DENYS KHARYTONCHUK</Link>, '14', <UserOutlined />),
-        ]),
-        getItem(<Link onClick={(event) => onMenuItemClick(event)}>Shields</Link>, '15', <ScheduleOutlined />),
-        getItem(<Link onClick={(event) => onMenuItemClick(event)}>Files</Link>, '16', <FileOutlined />),
+        getItem(<Link onClick={() => handleMenuClick('home')}>Home</Link>, 'home', <GlobalOutlined />),
+        getItem(<Link onClick={() => handleMenuClick('robots-inspection')}>Robots Inspection</Link>, 'robots-inspection', <RobotOutlined />),
+        getItem(<Link onClick={() => handleMenuClick('ws-tasks')}>WS Tasks</Link>, 'ws-tasks', <AliwangwangOutlined />),
+        getItem(
+            'Employers',
+            'sub1',
+            <TeamOutlined />,
+            employers.map(employer =>
+                getItem(
+                    <Link onClick={() => handleEmployerClick(employer.id.toString())}>{employer.firstName} {employer.lastName}</Link>,
+                    employer.id,
+                    <UserOutlined />
+                )
+            )
+        ),
+        getItem(<Link onClick={() => handleMenuClick('shields')}>Shields</Link>, 'shields', <ScheduleOutlined />),
+        getItem(<Link onClick={() => handleMenuClick('files')}>Files</Link>, 'files', <FileOutlined />)
     ];
+
+    if (!isCurrentUser) {
+        return <SignIn />;
+    }
 
     return (
         <Layout style={{ minHeight: '100vh' }}>
-            <SignIn />
-            <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
+            <Sider collapsible collapsed={collapsed} onCollapse={setCollapsed}>
                 <div className="demo-logo-vertical" />
-                <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} />
+                <Menu theme="dark" defaultSelectedKeys={['home']} mode="inline" items={items} />
             </Sider>
             <Layout>
                 <MyHeader />

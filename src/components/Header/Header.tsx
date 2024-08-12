@@ -1,140 +1,75 @@
-import React, {useState, useCallback, useEffect} from 'react';
-import styles from './Header.module.css';
-import logo from '../../assets/logo.jpg';
-import {Avatar, Button, Dropdown, Menu, Col, DatePicker, Drawer, Form, Input, Row, Select, Space, message} from "antd";
+import React, { useState } from 'react';
+import { Avatar, Button, Dropdown, Menu, Col, DatePicker, Drawer, Form, Input, Row, Select, Space, message } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
-import { IEmployer } from "../../types/Employer";
-import {db} from "../../firebase";
-import {doc, setDoc} from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import dayjs from "dayjs";
+import InputMask from 'react-input-mask';
+import {db} from "../../firebase";
+import {MaskedInput} from "antd-mask-input";
+import styles from './Header.module.css'
 
 const { Option } = Select;
 
 const items_lang = [
     {
         key: '1',
-        label: (
-            <a target="_blank" rel="noopener noreferrer" href="https://www.antgroup.com">
-                English
-            </a>
-        ),
+        label: 'English',
     },
     {
         key: '2',
-        label: (
-            <a target="_blank" rel="noopener noreferrer" href="https://www.aliyun.com">
-                Ukrainian
-            </a>
-        ),
+        label: 'Ukrainian',
     },
 ];
 
 const items_user = [
     {
         key: '1',
-        label: (
-            <a target="_blank" rel="noopener noreferrer" href="https://www.antgroup.com">
-                Change password
-            </a>
-        ),
+        label: 'Change password',
     },
     {
         key: '2',
-        label: (
-            <a target="_blank" rel="noopener noreferrer" href="https://www.aliyun.com">
-                Log out
-            </a>
-        ),
+        label: 'Log out',
     },
 ];
 
-const Language_menu = (
-    <Menu items={items_lang} />
-);
+const Language_menu = <Menu items={items_lang} />;
+const User_menu = <Menu items={items_user} />;
 
-const User_menu = (
-    <Menu items={items_user} />
-);
 
 const MyHeader = () => {
+    const [form] = Form.useForm();
     const [open, setOpen] = useState(false);
 
-    const [newEmployerData, setNewEmployerData] = useState<IEmployer>({
-        id: 0,
-        address: '',
-        birthdayDate: 0,
-        businessTrip: false,
-        contractDates: [],
-        forkLiftLicense: false,
-        country: "",
-        driverLicense: false,
-        firstName: "",
-        lastName: "",
-        phone: 0,
-        position: "",
-        residentCard: false,
-        residentCardDates: [],
-        scissorLiftLicense: false,
-    });
+    const cellphoneMask = '+48 (000) 000-000';
 
-    const showDrawer = () => {
-        setOpen(true);
-    };
-
-    const onClose = () => {
-        setOpen(false);
-    };
-
-    const onUserDataInput = useCallback((type: string, value: any) => {
-        setNewEmployerData((prevData) => ({
-            ...prevData,
-            [type]: value.target ? value.target.value : value,
-        }));
-    }, []);
+    const showDrawer = () => setOpen(true);
+    const onClose = () => setOpen(false);
 
     const onSubmitClick = async () => {
-        const body = {
-            ...newEmployerData,
-            id: Date.now(),
-            birthdayDate: dayjs(newEmployerData.birthdayDate).valueOf(),
-            contractDates: newEmployerData.contractDates.map(el => dayjs(el).valueOf()),
-            residentCardDates: newEmployerData.residentCardDates.map(el => dayjs(el).valueOf()),
-        };
-
         try {
-            const ref = doc(db, 'employers', `${body.firstName.trim().toLowerCase()}-${body.lastName.trim().toLowerCase()}`);
-            await setDoc(ref, { ...body });
+            const values = form.getFieldsValue();
+            const body = {
+                ...values,
+                id: Date.now(),
+                birthdayDate: dayjs(values.birthdayDate).valueOf(),
+                contractDates: values.contractDates.map((el: any) => dayjs(el).valueOf()),
+                residentCardDates: values.residentCardDates?.map((el: any) => dayjs(el).valueOf()) || [],
+            };
+
+            const ref = doc(db, 'employers', `${body.id}`);
+            await setDoc(ref, body);
             message.success("Successfully added employer");
-
-            setNewEmployerData({
-                id: 0,
-                address: '',
-                birthdayDate: 0,
-                businessTrip: false,
-                contractDates: [],
-                forkLiftLicense: false,
-                country: "",
-                driverLicense: false,
-                firstName: "",
-                lastName: "",
-                phone: 0,
-                position: "",
-                residentCard: false,
-                residentCardDates: [],
-                scissorLiftLicense: false,
-            })
+            form.resetFields();
+            onClose();
         } catch (err) {
-            err && message.error(err.toString());
+           err && message.error(err.toString());
         }
-
-        console.log(body);
     };
-
 
     return (
         <div className={styles.Main}>
             <div className={styles.Logo_body}>
-                <Avatar src={logo} />
+                <Avatar src="/path-to-logo" />
             </div>
             <div className={styles.Button_body}>
                 <Dropdown overlay={Language_menu} placement="bottomRight">
@@ -162,7 +97,7 @@ const MyHeader = () => {
                         </Space>
                     }
                 >
-                    <Form layout="vertical" hideRequiredMark>
+                    <Form layout="vertical" hideRequiredMark form={form}>
                         <Row gutter={16}>
                             <Col span={12}>
                                 <Form.Item
@@ -170,11 +105,7 @@ const MyHeader = () => {
                                     label="First Name"
                                     rules={[{ required: true, message: 'Please enter first name' }]}
                                 >
-                                    <Input
-                                        value={newEmployerData.firstName}
-                                        onChange={(event) => onUserDataInput("firstName", event)}
-                                        placeholder="Please enter first name"
-                                    />
+                                    <Input placeholder="Please enter first name" />
                                 </Form.Item>
                             </Col>
                             <Col span={12}>
@@ -183,11 +114,7 @@ const MyHeader = () => {
                                     label="Last Name"
                                     rules={[{ required: true, message: 'Please enter last name' }]}
                                 >
-                                    <Input
-                                        value={newEmployerData.lastName}
-                                        onChange={(event) => onUserDataInput("lastName", event)}
-                                        placeholder="Please enter last name"
-                                    />
+                                    <Input placeholder="Please enter last name" />
                                 </Form.Item>
                             </Col>
                         </Row>
@@ -198,11 +125,7 @@ const MyHeader = () => {
                                     label="Position"
                                     rules={[{ required: true, message: 'Please select a position' }]}
                                 >
-                                    <Select
-                                        value={newEmployerData.position}
-                                        onChange={(value) => onUserDataInput("position", value)}
-                                        placeholder="Please select position"
-                                    >
+                                    <Select placeholder="Please select position">
                                         <Option value="Leader">Leader</Option>
                                         <Option value="Worker">Worker</Option>
                                     </Select>
@@ -211,51 +134,37 @@ const MyHeader = () => {
                             <Col span={12}>
                                 <Form.Item
                                     name="phone"
-                                    label="Phone Number"
-                                    rules={[{ required: true, message: 'Please enter phone number' }]}
+                                    label="Phone number"
+                                    rules={[{ required: true, message: 'Please input phone number' }]}
                                 >
-                                    <Input
-                                        value={newEmployerData.phone}
-                                        onChange={(event) => onUserDataInput("phone", event)}
-                                        type="text"
-                                        addonBefore="+48"
-                                        placeholder="Please enter phone number"
+                                    <MaskedInput
+                                        mask={cellphoneMask}
                                     />
                                 </Form.Item>
                             </Col>
                         </Row>
                         <Row gutter={16}>
-                            <Col span={newEmployerData.residentCard ? 12 : 24}>
+                            <Col span={12}>
                                 <Form.Item
                                     name="residentCard"
                                     label="Resident card status"
                                     rules={[{ required: true, message: 'Please choose the resident card status' }]}
                                 >
-                                    <Select
-                                        value={newEmployerData.residentCard}
-                                        onChange={(value) => onUserDataInput("residentCard", value)}
-                                        placeholder="Please choose the status"
-                                    >
+                                    <Select placeholder="Please choose the status">
                                         <Option value={true}>Yes</Option>
                                         <Option value={false}>No</Option>
                                     </Select>
                                 </Form.Item>
                             </Col>
-                            {newEmployerData.residentCard &&
-                                <Col span={12}>
-                                    <Form.Item
-                                        name="residentCardValidity"
-                                        label="From | To resident card valid"
-                                        rules={[{ required: true, message: 'Please choose the validity period' }]}
-                                    >
-                                        <DatePicker.RangePicker
-                                            style={{ width: '100%' }}
-                                            getPopupContainer={(trigger) => trigger.parentElement!}
-                                            onChange={(dates) => onUserDataInput("residentCardDates", dates)}
-                                        />
-                                    </Form.Item>
-                                </Col>
-                            }
+                            <Col span={12}>
+                                <Form.Item
+                                    name="residentCardDates"
+                                    label="From | To resident card valid"
+                                    rules={[{ required: form.getFieldValue("residentCard") === true, message: 'Please choose the validity period' }]}
+                                >
+                                    <DatePicker.RangePicker style={{ width: '100%' }} />
+                                </Form.Item>
+                            </Col>
                         </Row>
                         <Row gutter={16}>
                             <Col span={12}>
@@ -264,11 +173,7 @@ const MyHeader = () => {
                                     label="Driver license"
                                     rules={[{ required: true, message: 'Please choose the driver license status' }]}
                                 >
-                                    <Select
-                                        value={newEmployerData.driverLicense}
-                                        onChange={(value) => onUserDataInput("driverLicense", value)}
-                                        placeholder="Please choose the status"
-                                    >
+                                    <Select placeholder="Please choose the status">
                                         <Option value={true}>Yes</Option>
                                         <Option value={false}>No</Option>
                                     </Select>
@@ -280,11 +185,7 @@ const MyHeader = () => {
                                     label="Scissor Lift License"
                                     rules={[{ required: true, message: 'Please choose the scissor lift license status' }]}
                                 >
-                                    <Select
-                                        value={newEmployerData.scissorLiftLicense}
-                                        onChange={(value) => onUserDataInput("scissorLiftLicense", value)}
-                                        placeholder="Please choose the status"
-                                    >
+                                    <Select placeholder="Please choose the status">
                                         <Option value={true}>Yes</Option>
                                         <Option value={false}>No</Option>
                                     </Select>
@@ -294,13 +195,9 @@ const MyHeader = () => {
                                 <Form.Item
                                     name="forkLiftLicense"
                                     label="Fork Lift License"
-                                    rules={[{ required: true, message: 'Please choose the scissor lift license status' }]}
+                                    rules={[{ required: true, message: 'Please choose the fork lift license status' }]}
                                 >
-                                    <Select
-                                        value={newEmployerData.forkLiftLicense}
-                                        onChange={(value) => onUserDataInput("forkLiftLicense", value)}
-                                        placeholder="Please choose the status"
-                                    >
+                                    <Select placeholder="Please choose the status">
                                         <Option value={true}>Yes</Option>
                                         <Option value={false}>No</Option>
                                     </Select>
@@ -312,11 +209,7 @@ const MyHeader = () => {
                                     label="Business Trip"
                                     rules={[{ required: true, message: 'Please choose the business trip status' }]}
                                 >
-                                    <Select
-                                        value={newEmployerData.businessTrip}
-                                        onChange={(value) => onUserDataInput("businessTrip", value)}
-                                        placeholder="Please choose the status"
-                                    >
+                                    <Select placeholder="Please choose the status">
                                         <Option value={true}>Yes</Option>
                                         <Option value={false}>No</Option>
                                     </Select>
@@ -328,14 +221,10 @@ const MyHeader = () => {
                                     label="Country"
                                     rules={[{ required: true, message: 'Please choose the country' }]}
                                 >
-                                    <Select
-                                        value={newEmployerData.country}
-                                        onChange={(value) => onUserDataInput("country", value)}
-                                        placeholder="Please choose the status"
-                                    >
+                                    <Select placeholder="Please choose the country">
                                         <Option value="Ukraine">🇺🇦 Ukraine</Option>
                                         <Option value="Belarus">🇧🇾 Belarus</Option>
-                                        <Option value="Chines">🇨🇳 Chines</Option>
+                                        <Option value="China">🇨🇳 China</Option>
                                     </Select>
                                 </Form.Item>
                             </Col>
@@ -345,33 +234,23 @@ const MyHeader = () => {
                                     label="Employer contract dates"
                                     rules={[{ required: true, message: 'Please choose the contract dates' }]}
                                 >
-                                    <DatePicker.RangePicker
-                                        style={{ width: '100%' }}
-                                        getPopupContainer={(trigger) => trigger.parentElement!}
-                                        onChange={(dates) => onUserDataInput("contractDates", dates)}
-                                    />
+                                    <DatePicker.RangePicker style={{ width: '100%' }} />
                                 </Form.Item>
                             </Col>
                             <Col span={12}>
                                 <Form.Item
-                                    label="Birthday date"
                                     name="birthdayDate"
+                                    label="Birthday date"
                                 >
-                                    <DatePicker
-                                        style={{ width: "100%" }}
-                                        onChange={(date) => onUserDataInput("birthdayDate", date)}
-                                    />
+                                    <DatePicker style={{ width: "100%" }} />
                                 </Form.Item>
                             </Col>
                             <Col span={12}>
                                 <Form.Item
-                                    label="Address"
                                     name="address"
+                                    label="Address"
                                 >
-                                    <Input
-                                        value={newEmployerData.country}
-                                        onChange={(event) => onUserDataInput("address", event)}
-                                    />
+                                    <Input />
                                 </Form.Item>
                             </Col>
                         </Row>

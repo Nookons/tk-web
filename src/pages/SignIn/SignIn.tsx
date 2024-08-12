@@ -1,71 +1,94 @@
 import React, { useState } from 'react';
-import { Button, Col, Drawer, Form, Input, message, Space } from 'antd';
+import {Button, Col, Divider, Drawer, Form, Input, message, Row, Space} from 'antd';
+import styles from './SignIn.module.css'
+import { doc, getDoc } from "firebase/firestore";
+import {db} from "../../firebase";
+import {useDispatch} from "react-redux";
+import {userEnter} from "../../store/reducers/User";
+import {useAppSelector} from "../../hooks/storeHooks";
 
 
 
 const SignIn: React.FC = () => {
-    const [open, setOpen] = useState(true);
+    const dispatch = useDispatch();
+    const [form] = Form.useForm();
+    const isCurrentUser = useAppSelector(state => state.currentUser.status)
 
-    const [isUser, setIsUser] = useState<boolean>(true);
 
-    const [userData, setUserData] = useState({
-        user_name: "",
-        password: ""
-    });
+    const onLoginClick = async () => {
+        const values = form.getFieldsValue();
 
-    const onSubmit = () => {
-        if (userData.user_name === "geekplus" && userData.password === "77778888") {
-            setIsUser(true); // Should correctly toggle the state
-        } else {
-            message.error("Something went wrong!");
+        try {
+            const docRef = doc(db, "user_accounts", values.username);
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+                if (docSnap.data().password === values.password) {
+                    dispatch(userEnter(docSnap.data().user_id))
+                    message.success(`Success enter like ${values.username}`)
+                }
+            } else {
+                message.error("No such document!");
+            }
+        } catch (err) {
+            err && message.error(err.toString());
         }
-    };
+    }
+
 
     return (
-        <Drawer
-            width={320}
-            open={!isUser}
-            bodyStyle={{
-                paddingBottom: 80,
-            }}
-            extra={
-                <Space>
-                    <Button onClick={onSubmit} type="primary">
-                        Sign In
-                    </Button>
-                </Space>
-            }
-        >
-            <Form layout="vertical" hideRequiredMark>
-                <Col span={24}>
-                    <Form.Item
-                        name="Username"
-                        label="Username"
-                        rules={[{ required: true, message: "Username can't be empty" }]}
-                    >
-                        <Input
-                            style={{ width: "100%" }}
-                            type="text"
-                            placeholder="Please enter user name"
-                            onChange={(event) => setUserData((prev) => ({ ...prev, user_name: event.target.value }))}
-                        />
-                    </Form.Item>
-                </Col>
-                <Col span={24}>
-                    <Form.Item
-                        name="Password"
-                        label="Password"
-                        rules={[{ required: true, message: "Password can't be empty" }]}
-                    >
-                        <Input
-                            type="password"
-                            placeholder="Please enter your password"
-                            onChange={(event) => setUserData((prev) => ({ ...prev, password: event.target.value }))}
-                        />
-                    </Form.Item>
-                </Col>
-            </Form>
-        </Drawer>
+        <div className={!isCurrentUser ? styles.Main : ''}>
+            <Drawer
+                width={620}
+                open={!isCurrentUser}
+                bodyStyle={{
+                    paddingBottom: 80,
+                }}
+                extra={
+                    <Space>
+                        <Button onClick={onLoginClick} type="primary">
+                            Sign In
+                        </Button>
+                    </Space>
+                }
+            >
+                <Form layout="vertical" hideRequiredMark form={form}>
+                    <Row gutter={16}>
+                        <Col span={24}>
+                            <h6>Please input you're data for login below</h6>
+                            <Divider/>
+                        </Col>
+                    </Row>
+                    <Row gutter={16}>
+                        <Col span={12}>
+                            <Form.Item
+                                name="username"
+                                label="Username"
+                                rules={[{ required: true, message: <p style={{fontSize: 14}}>Username can't be empty</p> }]}
+                            >
+                                <Input
+                                    style={{ width: "100%" }}
+                                    type="text"
+                                    placeholder="Please enter user name"
+                                />
+                            </Form.Item>
+                        </Col>
+                        <Col span={12}>
+                            <Form.Item
+                                name="password"
+                                label="Password"
+                                rules={[{ required: true, message: <p style={{fontSize: 14}}>Password can't be empty</p> }]}
+                            >
+                                <Input
+                                    type="password"
+                                    placeholder="Please enter your password"
+                                />
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                </Form>
+            </Drawer>
+        </div>
     );
 };
 
