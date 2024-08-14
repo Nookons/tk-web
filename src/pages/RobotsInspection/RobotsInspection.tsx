@@ -119,7 +119,7 @@ const RobotsInspection = () => {
                     </div>
                 }
             </Form>
-            <RobotsList/>
+            <RobotsList robot_id={robot_id}/>
         </div>
     );
 };

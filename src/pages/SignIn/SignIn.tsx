@@ -1,88 +1,151 @@
-import React, { useState } from 'react';
-import {Button, Col, Divider, Drawer, Form, Input, message, Row, Space} from 'antd';
-import styles from './SignIn.module.css'
-import { doc, getDoc } from "firebase/firestore";
-import {db} from "../../firebase";
-import {useDispatch} from "react-redux";
-import {userEnter} from "../../store/reducers/User";
-import {useAppSelector} from "../../hooks/storeHooks";
-
-
+import React, { useEffect, useState } from 'react';
+import { Button, Col, Divider, Drawer, Form, Input, message, Row, Space, Checkbox, Spin } from 'antd';
+import { useDispatch } from 'react-redux';
+import { userEnter } from '../../store/reducers/User';
+import { useAppSelector } from '../../hooks/storeHooks';
+import { doc, getDoc } from 'firebase/firestore';
+import dayjs from 'dayjs';
+import { IEmployer } from '../../types/Employer';
+import { db } from '../../firebase';
+import styles from './SignIn.module.css';
 
 const SignIn: React.FC = () => {
     const dispatch = useDispatch();
     const [form] = Form.useForm();
-    const isCurrentUser = useAppSelector(state => state.currentUser.status)
+    const isCurrentUser = useAppSelector(state => state.currentUser.status);
+    const [loading, setLoading] = useState(false);
 
+    useEffect(() => {
+        const autoLogin = async () => {
+            const local_data = localStorage.getItem("login_data");
 
-    const onLoginClick = async () => {
-        const values = form.getFieldsValue();
+            if (local_data) {
+                try {
+                    const parsedData = JSON.parse(local_data);
+                    const current_time = dayjs().valueOf();
+                    const isCan = dayjs(current_time).isBefore(parsedData.check_time);
 
+                    if (isCan) {
+                        message.success("Used auto login");
+                        dispatch(userEnter(parsedData.user as IEmployer));
+                    } else {
+                        message.info("Auto login time expired, please sign in again");
+                    }
+                } catch (err) {
+                    message.error("Failed to process auto-login data");
+                }
+            }
+        };
+
+        autoLogin();
+    }, [dispatch]);
+
+    const getUser = async (data: any) => {
+        setLoading(true);
         try {
-            const docRef = doc(db, "user_accounts", values.username);
+            const docRef = doc(db, "user_accounts", data.username);
             const docSnap = await getDoc(docRef);
 
-            if (docSnap.exists()) {
-                if (docSnap.data().password === values.password) {
-                    dispatch(userEnter(docSnap.data().user_id))
-                    message.success(`Success enter like ${values.username}`)
-                }
-            } else {
-                message.error("No such document!");
-            }
-        } catch (err) {
-            err && message.error(err.toString());
-        }
-    }
+            console.log(docSnap.data());
 
+            if (!docSnap.exists()) {
+                message.error("No such document!");
+                return;
+            }
+
+            if (docSnap.data()?.password !== data.password) {
+                message.error("Invalid credentials!");
+                return;
+            }
+
+            const fullUserPath = doc(db, "employers", docSnap.data().id.toString());
+            const fullUserSnap = await getDoc(fullUserPath);
+
+            if (!fullUserSnap.exists()) {
+                message.error("User data not found!");
+                return;
+            }
+
+            const userData = {
+                check_time: dayjs().add(1, 'hour').valueOf(),
+                username: data.username,
+                user: fullUserSnap.data(),
+                id: docSnap.data().user_id
+            };
+
+            dispatch(userEnter(fullUserSnap.data() as IEmployer));
+            if (data.isLogin) {
+                localStorage.setItem("login_data", JSON.stringify(userData));
+            }
+
+            message.success(`Successfully logged in as ${data.username}`);
+        } catch (err) {
+            err && message.error(`Login failed: ${err.toString()}`);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const onLoginClick = () => {
+        form.validateFields().then(values => {
+            getUser(values);
+        }).catch(errorInfo => {
+            errorInfo && message.error("Please fill all required fields");
+        });
+    };
 
     return (
         <div className={!isCurrentUser ? styles.Main : ''}>
             <Drawer
                 width={620}
                 open={!isCurrentUser}
-                bodyStyle={{
-                    paddingBottom: 80,
-                }}
+                bodyStyle={{ paddingBottom: 80 }}
                 extra={
                     <Space>
-                        <Button onClick={onLoginClick} type="primary">
-                            Sign In
+                        <Button onClick={onLoginClick} type="primary" disabled={loading}>
+                            {loading ? <Spin size="small" /> : "Sign In"}
                         </Button>
                     </Space>
                 }
             >
-                <Form layout="vertical" hideRequiredMark form={form}>
+                <Form layout="horizontal" hideRequiredMark form={form}>
                     <Row gutter={16}>
                         <Col span={24}>
-                            <h6>Please input you're data for login below</h6>
-                            <Divider/>
+                            <h6>Please enter your login details below</h6>
+                            <Divider />
                         </Col>
                     </Row>
                     <Row gutter={16}>
-                        <Col span={12}>
+                        <Col span={24}>
                             <Form.Item
                                 name="username"
                                 label="Username"
-                                rules={[{ required: true, message: <p style={{fontSize: 14}}>Username can't be empty</p> }]}
+                                rules={[{ required: true, message: "Username can't be empty" }]}
                             >
                                 <Input
                                     style={{ width: "100%" }}
                                     type="text"
-                                    placeholder="Please enter user name"
+                                    placeholder="Please enter username"
                                 />
                             </Form.Item>
                         </Col>
-                        <Col span={12}>
+                        <Col span={24}>
                             <Form.Item
                                 name="password"
                                 label="Password"
-                                rules={[{ required: true, message: <p style={{fontSize: 14}}>Password can't be empty</p> }]}
+                                rules={[{ required: true, message: "Password can't be empty" }]}
                             >
                                 <Input
                                     type="password"
                                     placeholder="Please enter your password"
                                 />
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                    <Row gutter={16}>
+                        <Col span={12}>
+                            <Form.Item name="isLogin" valuePropName="checked">
+                                <Checkbox>Keep me logged in</Checkbox>
                             </Form.Item>
                         </Col>
                     </Row>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import { collection, query, onSnapshot, setDoc, doc, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import {Badge, Button, Card, Descriptions, Divider, List, message, Modal, Pagination} from "antd";
@@ -29,7 +29,11 @@ const getCondition = (value: string) => {
     }
 }
 
-const RobotsList = () => {
+interface RobotsListProps {
+    robot_id: number
+}
+
+const RobotsList: FC<RobotsListProps> = (robot_id) => {
     const data = useAppSelector(state => state.robots.items);
     const dispatch = useAppDispatch();
 
@@ -103,7 +107,7 @@ const RobotsList = () => {
                     total={filteredArray ? filteredArray.length : data.length}
                     onChange={handlePageChange}
                 />
-                <RobotsFilter data={data} setFilteredArray={setFilteredArray} />
+                <RobotsFilter  data={data} setFilteredArray={setFilteredArray} />
             </div>
             <List
                 dataSource={paginatedData}

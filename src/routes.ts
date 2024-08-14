@@ -1,4 +1,5 @@
 import {
+    ADD_SHIFT_ROUTE,
     EMPLOYER_ROUTE,
     HOME_ROUTE,
     ROBOT_INSPECTION_ROUTE, SHIELDS_SCREEN_ROUTE,
@@ -11,6 +12,7 @@ import Employer from "./pages/Employer/Employer";
 import RobotsInspection from "./pages/RobotsInspection/RobotsInspection";
 import SignIn from "./pages/SignIn/SignIn";
 import ShieldsScreen from "./pages/ShieldsScreen/ShieldsScreen";
+import AddShifts from "./pages/AddShift/AddShifts";
 
 
 interface Route {
@@ -52,5 +54,10 @@ export const publicRoutes: PublicRoutes = [
         path: SHIELDS_SCREEN_ROUTE,
         Component: ShieldsScreen,
         label: 'Shields Screen',
+    },
+    {
+        path: ADD_SHIFT_ROUTE,
+        Component: AddShifts,
+        label: 'Add Shifts',
     },
 ];

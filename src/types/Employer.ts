@@ -1,3 +1,8 @@
+interface IEmployerShift {
+    day: number;
+    time: string;
+    type: string;
+}
 
 export interface IEmployer {
     id: number;
@@ -14,5 +19,6 @@ export interface IEmployer {
     position: string;
     residentCard: boolean;
     residentCardDates: number[];
+    work_days: IEmployerShift[];
     scissorLiftLicense: boolean;
 }

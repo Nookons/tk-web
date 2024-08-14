@@ -1,139 +1,192 @@
-import React, {useEffect, useState} from 'react';
-import {useLocation} from "react-router-dom";
-import { doc, getDoc } from "firebase/firestore";
-import {db} from "../../firebase";
-import {Badge, Descriptions, DescriptionsProps, message} from "antd";
-import dayjs from "dayjs";
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
+import { useLocation } from 'react-router-dom';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../../firebase';
+import {
+    Badge,
+    Descriptions,
+    DescriptionsProps,
+    message,
+    Row,
+    Col,
+    Button,
+    Dropdown,
+    Menu,
+    Timeline,
+    Spin
+} from 'antd';
+import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import { IEmployer } from '../../types/Employer';
+import { useShiftsForEmployer } from '../../hooks/useShiftsForEmployer';
 
-// Extend dayjs with the relativeTime plugin
 dayjs.extend(relativeTime);
 
-interface IEmployeeDetails {
-    contract_from: number; // UNIX timestamp
-    contract_validity: number; // UNIX timestamp
-    phone: number; // Phone number
-    scissor_lift_license: "yes" | "no"; // Boolean as a string
-    address: string; // Address string
-    position: string; // Job position
-    birthday_date: number; // UNIX timestamp
-    country: string; // Country code
-    driver_license: "yes" | "no"; // Boolean as a string
-    business_trip: "yes" | "no"; // Boolean as a string
-    resident_card: "in progress" | "yes" | "no"; // Resident card status
-    resident_card_validity: number; // UNIX timestamp or 0 if not valid
+interface IShift {
+    date: string;
+    type: string;
 }
 
-const Employer = () => {
+interface ITimelineItem {
+    children: string;
+    key: string | number;
+    color: string;  // Добавляем цвет для точки
+}
+
+const Employer: React.FC = () => {
     const location = useLocation();
-    const first_name = new URLSearchParams(location.search).get('first_name');
-    const last_name = new URLSearchParams(location.search).get('last_name');
+    const user_id = useMemo(() => new URLSearchParams(location.search).get('id'), [location.search]);
+    const [currentEmployer, setCurrentEmployer] = useState<IEmployer | null>(null);
+    const [loading, setLoading] = useState(true);
+    const shifts = useShiftsForEmployer(user_id || undefined);
 
-    const [currentEmployer, setCurrentEmployer] = useState<IEmployeeDetails | null>(null);
-
-
-    useEffect(() => {
-        async function getEmployer () {
-            if (first_name && last_name) {
-                const path = first_name.toLocaleLowerCase() + "-" + last_name.toLocaleLowerCase();
-
-
-                const docRef = doc(db, "employers", path);
-                const docSnap = await getDoc(docRef);
-
-                if (docSnap.exists()) {
-                    message.success(`Has employers ${first_name} ${last_name}`);
-                    console.log(docSnap.data());
-                    setCurrentEmployer(docSnap.data() as IEmployeeDetails);
-                } else {
-                    message.error("No such document")
-                }
-            }
+    const fetchEmployer = useCallback(async () => {
+        if (!user_id) {
+            message.error('No user ID provided');
+            return;
         }
-        getEmployer();
-    }, [first_name, last_name]);
+
+        try {
+            const docRef = doc(db, 'employers', user_id);
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+                const employerData = docSnap.data() as IEmployer;
+                setCurrentEmployer(employerData);
+            } else {
+                message.error('No such document found');
+            }
+        } catch (error) {
+            message.error('Error fetching document');
+            console.error('Error fetching employer data:', error);
+        } finally {
+            setLoading(false);
+        }
+    }, [user_id]);
 
     useEffect(() => {
-        console.log(currentEmployer);
-    }, [currentEmployer]);
+        fetchEmployer();
+    }, [fetchEmployer]);
 
 
-    const items: DescriptionsProps['items'] = [
+
+    const items: DescriptionsProps['items'] = useMemo(() => [
         {
-            key: '1',
-            label: 'Address',
-            children: `${currentEmployer?.address ?? 'N/A'}`,
-            span: 2,
-        },
-        {
-            key: '2',
+            key: 'position',
             label: 'Position',
-            children: <Badge status="success" text={currentEmployer?.position ?? 'N/A'} />,
+            children: <Badge status="success" text={currentEmployer?.position || 'N/A'} />,
+            span: 1,
         },
         {
-            key: '3',
-            label: 'Country',
-            children: `${currentEmployer?.country ?? 'N/A'}`,
-        },
-        {
-            key: '4',
+            key: 'residentCard',
             label: 'Resident Card',
-            children: <Badge status="processing" text={currentEmployer?.resident_card ?? 'N/A'} />,
-            span: 2
+            children: <Badge status="processing" text={currentEmployer?.residentCard ? 'Have' : `Don't have`} />,
+            span: 1,
         },
         {
-            key: '4',
-            label: 'Resident Card Validity',
-            children: currentEmployer?.resident_card_validity
-                ? `${dayjs(currentEmployer.resident_card_validity * 1000).format("YYYY-MM-DD")}`
-                : 'N/A',
-            span: 2
-        },
-        {
-            key: '5',
-            label: 'Birthday Date',
-            span: 2,
-            children: currentEmployer?.birthday_date
-                ? `${dayjs(currentEmployer.birthday_date * 1000).format("YYYY-MM-DD")} | ${dayjs(currentEmployer.birthday_date * 1000).fromNow()}`
-                : 'N/A',
-        },
-        {
-            key: '6',
-            label: 'Phone',
-            children: `${currentEmployer?.phone ?? 'N/A'}`,
-            span: 2
-        },
-        {
-            key: '6',
+            key: 'businessTrip',
             label: 'Business Trip',
-            children: `${currentEmployer?.business_trip ?? 'N/A'}`,
+            children: currentEmployer?.businessTrip ? 'Yes' : 'No',
+            span: 1,
         },
         {
-            key: '6',
-            label: 'Contract From',
-            children: currentEmployer?.contract_from
-                ? `${dayjs(currentEmployer.contract_from * 1000).format("YYYY-MM-DD")}`
-                : 'N/A',
+            key: 'address',
+            label: 'Address',
+            children: currentEmployer?.address || 'N/A',
+            span: 3,
         },
         {
-            key: '6',
-            label: 'Contract Validity',
-            children: currentEmployer?.contract_validity
-                ? `${dayjs(currentEmployer.contract_validity * 1000).format("YYYY-MM-DD")}`
+            key: 'residentCardTo',
+            label: 'Resident Card To',
+            children: currentEmployer?.residentCardDates
+                ? `${dayjs(currentEmployer.residentCardDates[1]).format('YYYY-MM-DD')} (${dayjs(currentEmployer.residentCardDates[1]).fromNow()})`
                 : 'N/A',
+            span: 2,
         },
-    ];
+        {
+            key: 'residentCardFrom',
+            label: 'Resident Card From',
+            children: currentEmployer?.residentCardDates
+                ? `${dayjs(currentEmployer.residentCardDates[0]).format('YYYY-MM-DD')} (${dayjs(currentEmployer.residentCardDates[0]).fromNow()})`
+                : 'N/A',
+            span: 2,
+        },
+        {
+            key: 'contractTo',
+            label: 'Contract Validity To',
+            children: currentEmployer?.contractDates
+                ? `${dayjs(currentEmployer.contractDates[1]).format('YYYY-MM-DD')} (${dayjs(currentEmployer.contractDates[1]).fromNow()})`
+                : 'N/A',
+            span: 2,
+        },
+        {
+            key: 'contractFrom',
+            label: 'Contract Validity From',
+            children: currentEmployer?.contractDates
+                ? `${dayjs(currentEmployer.contractDates[0]).format('YYYY-MM-DD')} (${dayjs(currentEmployer.contractDates[0]).fromNow()})`
+                : 'N/A',
+            span: 2,
+        },
+        {
+            key: 'phone',
+            label: 'Phone',
+            children: currentEmployer?.phone || 'N/A',
+            span: 2,
+        },
+        {
+            key: 'country',
+            label: 'Country',
+            children: currentEmployer?.country || 'N/A',
+            span: 2,
+        },
+        {
+            key: 'birthdayDate',
+            label: 'Birthday Date',
+            children: currentEmployer?.birthdayDate
+                ? `${dayjs(currentEmployer.birthdayDate).format('YYYY-MM-DD')} | ${dayjs(currentEmployer.birthdayDate).fromNow()}`
+                : 'N/A',
+            span: 2,
+        },
+    ], [currentEmployer]);
+
+    const menu = (
+        <Menu>
+            <Menu.Item key="1">
+                <Button type="link">Change password</Button>
+            </Menu.Item>
+            <Menu.Item key="2">
+                <Button type="link">Edit Profile</Button>
+            </Menu.Item>
+            <Menu.Item key="3">
+                <Button type="link" danger>Logout</Button>
+            </Menu.Item>
+        </Menu>
+    );
+
+    if (loading) {
+        return <Spin tip="Loading..." />;
+    }
 
     if (!currentEmployer) {
-        return (
-            <div>
-                no
-            </div>
-        )
+        return <div>No employer data available</div>;
     }
 
     return (
-        <Descriptions title={`${first_name}  ${last_name}`} layout="horizontal" bordered items={items} />
+        <div style={{ padding: '20px' }}>
+            <Row gutter={[16, 16]}>
+                <Col span={24}>
+                    <Descriptions
+                        title={`${currentEmployer.firstName} ${currentEmployer.lastName}`}
+                        layout="horizontal"
+                        bordered
+                        items={items}
+                    />
+                </Col>
+                <Col span={24}>
+
+                </Col>
+            </Row>
+        </div>
     );
 };
 

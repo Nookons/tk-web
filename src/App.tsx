@@ -115,11 +115,7 @@ const App = () => {
             </Sider>
             <Layout>
                 <MyHeader />
-                <Content style={{ margin: '0 16px' }}>
-                    <Breadcrumb style={{ margin: '16px 0' }}>
-                        <Breadcrumb.Item>TEMP_001</Breadcrumb.Item>
-                        <Breadcrumb.Item>Home</Breadcrumb.Item>
-                    </Breadcrumb>
+                <Content style={{ margin: '16px 16px' }}>
                     <div
                         style={{
                             padding: 24,
