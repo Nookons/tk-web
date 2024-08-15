@@ -2,7 +2,7 @@ import {
     ADD_SHIFT_ROUTE,
     EMPLOYER_ROUTE,
     HOME_ROUTE,
-    ROBOT_INSPECTION_ROUTE, SHIELDS_SCREEN_ROUTE,
+    ROBOT_INSPECTION_ROUTE, ROBOT_ROUTE, SHIELDS_SCREEN_ROUTE,
     SIGN_IN_ROUTE,
     WORK_STATION_TASKS_ROUTE
 } from "./utils/consts";
@@ -13,6 +13,7 @@ import RobotsInspection from "./pages/RobotsInspection/RobotsInspection";
 import SignIn from "./pages/SignIn/SignIn";
 import ShieldsScreen from "./pages/ShieldsScreen/ShieldsScreen";
 import AddShifts from "./pages/AddShift/AddShifts";
+import Robot from "./pages/Robot/Robot";
 
 
 interface Route {
@@ -59,5 +60,10 @@ export const publicRoutes: PublicRoutes = [
         path: ADD_SHIFT_ROUTE,
         Component: AddShifts,
         label: 'Add Shifts',
+    },
+    {
+        path: ROBOT_ROUTE,
+        Component: Robot,
+        label: 'Robot page',
     },
 ];

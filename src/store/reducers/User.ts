@@ -6,6 +6,7 @@ type ItemsState = {
     user: IEmployer | null;
     error: string | undefined;
     user_id: number;
+    access_level: string;
 };
 
 const initialState: ItemsState = {
@@ -13,6 +14,7 @@ const initialState: ItemsState = {
     user: null,
     error: undefined,
     user_id: 0,
+    access_level: ""
 };
 
 const userSlice = createSlice({
@@ -23,10 +25,12 @@ const userSlice = createSlice({
             state.status = true;
             state.user_id = action.payload.id;
             state.user = action.payload;
+            state.access_level = action.payload.access_level;
         },
         userLeave: (state) => {
             state.status = false;
             state.user_id = 0;
+            state.access_level = "";
         },
         // If needed, you can add an error action as well
         setError: (state, action: PayloadAction<string | undefined>) => {

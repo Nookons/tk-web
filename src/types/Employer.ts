@@ -7,6 +7,7 @@ interface IEmployerShift {
 export interface IEmployer {
     id: number;
     address: string;
+    access_level: string;
     birthdayDate: number;
     businessTrip: boolean;
     contractDates: number[];

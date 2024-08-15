@@ -1,36 +1,24 @@
 import React, {useState} from 'react';
 import {Avatar, Button, Dropdown, Menu, Col, DatePicker, Drawer, Form, Input, Row, Select, Space, message} from "antd";
-import {PlusOutlined} from "@ant-design/icons";
 import {doc, setDoc} from "firebase/firestore";
 import dayjs from "dayjs";
 import {db} from "../../firebase";
 import {MaskedInput} from "antd-mask-input";
 import styles from './Header.module.css';
-import {useAppSelector} from "../../hooks/storeHooks";
+import {useAppDispatch, useAppSelector} from "../../hooks/storeHooks";
 import {IEmployer} from "../../types/Employer";
 import {useNavigate} from "react-router-dom";
 import {ADD_SHIFT_ROUTE} from "../../utils/consts";
 import logo from '../../assets/logo.jpg'
+import { userLeave } from '../../store/reducers/User';
 
 const {Option} = Select;
 
-const LanguageMenu = (
-    <Menu items={[
-        {key: '1', label: 'English'},
-        {key: '2', label: 'Ukrainian'},
-    ]}/>
-);
-
-const UserMenu = (
-    <Menu items={[
-        {key: '1', label: 'Change password'},
-        {key: '2', label: 'Log out'},
-    ]}/>
-);
 
 
 const MyHeader: React.FC = () => {
     const navigate = useNavigate();
+    const dispatch = useAppDispatch();
     const user: IEmployer | null = useAppSelector(state => state.currentUser.user);
     const [form] = Form.useForm();
     const [open, setOpen] = useState(false);
@@ -61,7 +49,33 @@ const MyHeader: React.FC = () => {
         }
     };
 
+    const onLogOut = () => {
+        dispatch(userLeave())
+        localStorage.removeItem("login_data")
+    }
+
     const AdminMenu = (
+        <Menu items={[
+            {key: '1', label: <p onClick={showDrawer} style={{fontSize: 16}}>New account</p>},
+            {key: '2', label: <p onClick={() => navigate(ADD_SHIFT_ROUTE)} style={{fontSize: 16}}>Shifts management</p>},
+        ]}/>
+    );
+
+    const LanguageMenu = (
+        <Menu items={[
+            {key: '1', label: 'English'},
+            {key: '2', label: 'Ukrainian'},
+        ]}/>
+    );
+
+    const UserMenu = (
+        <Menu items={[
+            {key: '1', label: 'Change password'},
+            {key: '2', label: <p onClick={onLogOut} style={{fontSize: 16}}>Log out</p>},
+        ]}/>
+    );
+
+    /*const AdminMenu = (
         <Menu items={[
             {
                 key: '1',
@@ -80,7 +94,7 @@ const MyHeader: React.FC = () => {
                 ),
             },
         ]}/>
-    );
+    );*/
 
     return (
         <div className={styles.Main}>
@@ -142,6 +156,7 @@ const MyHeader: React.FC = () => {
                                     <Select placeholder="Please select position">
                                         <Option value="Leader">Leader</Option>
                                         <Option value="Worker">Worker</Option>
+                                        <Option value="GPLC">GPLC</Option>
                                     </Select>
                                 </Form.Item>
                             </Col>

@@ -18,5 +18,9 @@
 .Button_body {
     display: flex;
     justify-content: space-between;
-    gap: 14px;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+@media screen and (max-width: 600px) {
 }

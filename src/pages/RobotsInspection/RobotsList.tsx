@@ -14,6 +14,8 @@ import { IRobot } from "../../types/Robot";
 import { useAppDispatch, useAppSelector } from "../../hooks/storeHooks";
 import { removeRobot } from "../../store/reducers/Robots";
 import RobotsFilter from "./RobotsFilter";
+import {ROBOT_ROUTE} from "../../utils/consts";
+import {useNavigate} from "react-router-dom";
 
 
 const getCondition = (value: string) => {
@@ -34,6 +36,7 @@ interface RobotsListProps {
 }
 
 const RobotsList: FC<RobotsListProps> = (robot_id) => {
+    const navigate = useNavigate();
     const data = useAppSelector(state => state.robots.items);
     const dispatch = useAppDispatch();
 
@@ -79,6 +82,11 @@ const RobotsList: FC<RobotsListProps> = (robot_id) => {
         setCurrentPage(page);
         if (pageSize) setPageSize(pageSize);
     };
+
+    const onRobotClick = (robot: IRobot) => {
+        const params = new URLSearchParams({ id: robot.robot_id.toString() });
+        navigate(`${ROBOT_ROUTE}?${params}`)
+    }
 
     return (
         <div>
@@ -143,7 +151,7 @@ const RobotsList: FC<RobotsListProps> = (robot_id) => {
                                 justifyContent: "flex-end",
                                 gap: 14
                             }}>
-                                <Button><ExpandAltOutlined /> Open</Button>
+                                <Button onClick={() => onRobotClick(item)}><ExpandAltOutlined /> Open</Button>
                                 <Button onClick={() => showModal(item)} ><DeleteOutlined /></Button>
                             </div>,
                         },

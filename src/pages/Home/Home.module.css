@@ -5,6 +5,15 @@
 
 .Home_body {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 0.5fr;
     gap: 14px;
+}
+
+@media screen and (max-width: 600px) {
+    .Home_body {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 14px;
+    }
 }

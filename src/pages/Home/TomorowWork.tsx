@@ -19,10 +19,10 @@ const TodayWork = () => {
         dayOffData: [] as IEmployer[],
     });
 
-    const current_date = dayjs().format("dddd, MMMM DD, YYYY");
+    const current_date = dayjs().add(1, 'day').format("dddd, MMMM DD, YYYY");
 
     // Memoize the current date to ensure it doesn't change on re-renders
-    const currentDate = useMemo(() => dayjs().format('MM-DD'), []);
+    const currentDate = useMemo(() => dayjs().add(1, "day").format('MM-DD'), []);
 
     useEffect(() => {
         if (!employersData || !shiftsData) return;
@@ -38,7 +38,7 @@ const TodayWork = () => {
 
         shifts.forEach(shift => {
             shift.shifts.forEach(employerShift => {
-                if (dayjs(employerShift.date).format('MM-DD') === currentDate && shift.employer) {
+                if (dayjs(employerShift.date).add(1, "day").format('MM-DD') === currentDate && shift.employer) {
                     employeeShiftMap.set(shift.employer.toString(), employerShift.type);
                 }
             });
@@ -100,7 +100,7 @@ const TodayWork = () => {
     };
 
     return (
-        <Card title={<Divider>Today {current_date}</Divider>}>
+        <Card title={<Divider>Tomorrow {current_date}</Divider>}>
             <Row gutter={4} justify={"center"} wrap={true}>
                 <Col style={{minWidth: "200px", marginTop: 4}} span={8}>
                     <Card>
