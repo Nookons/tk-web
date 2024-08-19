@@ -37,7 +37,7 @@ const RobotsInspection: React.FC = () => {
         };
 
         try {
-            const docRef = doc(db, "robotInspections", data.robot_id);  // Ссылка на документ в Firestore
+            const docRef = doc(db, "robots", data.robot_id);  // Ссылка на документ в Firestore
             const docSnap = await getDoc(docRef);  // Проверяем, существует ли документ
 
             if (docSnap.exists()) {

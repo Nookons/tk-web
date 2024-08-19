@@ -7,6 +7,14 @@ export interface IRobot_problem {
     note: string;
 }
 
+export interface IRobotNote {
+    date: number;
+    note_id: number;
+    body: string;
+    username: string;
+    user: number;
+}
+
 export interface IRobot {
     condition: string;
     robot_id: string;
@@ -15,4 +23,5 @@ export interface IRobot {
     update_time: number;
     username?: string;
     problem_component?: IRobot_problem[];
+    robot_notes?: IRobotNote[];
 }

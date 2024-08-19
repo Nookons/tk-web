@@ -12,6 +12,7 @@ import { removeRobot } from "../../store/reducers/Robots";
 import RobotsFilter from "./RobotsFilter";
 import {ROBOT_ROUTE} from "../../utils/consts";
 import {useNavigate} from "react-router-dom";
+import {onRobotRemove} from "../../utils/Robot/RobotRemove";
 
 
 const getCondition = (value: string) => {
@@ -51,12 +52,7 @@ const RobotsList: FC = () => {
             try {
                 const robotId = currentRobot.robot_id;
                 dispatch(removeRobot(robotId));
-                const washingtonRef = doc(db, "robots_check", "robot_array");
-
-                await updateDoc(washingtonRef, {
-                    array: data.filter(item => item.robot_id !== robotId)
-                });
-                message.success("Robot removed successfully");
+                await onRobotRemove(robotId)
             } catch (error) {
                 message.error("Failed to remove robot");
             }

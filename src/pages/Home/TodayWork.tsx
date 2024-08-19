@@ -13,6 +13,7 @@ const TodayWork = () => {
     const navigate = useNavigate();
     const employersData = useFetchEmployees();
     const shiftsData = useFetchShifts();
+
     const [shifts, setShifts] = useState({
         dayShiftData: [] as IEmployer[],
         nightShiftData: [] as IEmployer[],
@@ -21,8 +22,6 @@ const TodayWork = () => {
 
     const current_date = dayjs().format("dddd, MMMM DD, YYYY");
 
-    // Memoize the current date to ensure it doesn't change on re-renders
-    const currentDate = useMemo(() => dayjs().format('MM-DD'), []);
 
     useEffect(() => {
         if (!employersData || !shiftsData) return;
@@ -38,7 +37,7 @@ const TodayWork = () => {
 
         shifts.forEach(shift => {
             shift.shifts.forEach(employerShift => {
-                if (dayjs(employerShift.date).format('MM-DD') === currentDate && shift.employer) {
+                if (dayjs(employerShift.date).format('dddd, MMMM DD, YYYY') === current_date && shift.employer) {
                     employeeShiftMap.set(shift.employer.toString(), employerShift.type);
                 }
             });
@@ -72,10 +71,9 @@ const TodayWork = () => {
             } : prevShifts;
         });
 
-    }, [employersData, shiftsData, currentDate]);
+    }, [employersData, shiftsData, current_date]);
 
-    const renderList = (title: string, data: IEmployer[]) => {
-
+    const renderList = (data: IEmployer[]) => {
         return data.map((employer) => {
             const onUserClick = () => {
                 const params = new URLSearchParams({id: employer.id.toString()});
@@ -105,29 +103,22 @@ const TodayWork = () => {
                 <Col style={{minWidth: "200px", marginTop: 4}} span={8}>
                     <Card>
                         <Statistic prefix={<SunOutlined/>} title="Day" value={shifts.dayShiftData.length}/>
-                        {renderList('Day Shift', shifts.dayShiftData)}
+                        {renderList(shifts.dayShiftData)}
                     </Card>
                 </Col>
                 <Col style={{minWidth: "200px", marginTop: 4}} span={8}>
                     <Card>
                         <Statistic prefix={<MoonOutlined/>} title="Night" value={shifts.nightShiftData.length}/>
-                        {renderList('Day Shift', shifts.nightShiftData)}
+                        {renderList(shifts.nightShiftData)}
                     </Card>
                 </Col>
                 <Col style={{minWidth: "200px", marginTop: 4}} span={8}>
                     <Card>
                         <Statistic prefix={<SmileOutlined/>} title="Day Off" value={shifts.dayOffData.length}/>
-                        {renderList('Day Shift', shifts.dayOffData)}
+                        {renderList(shifts.dayOffData)}
                     </Card>
                 </Col>
             </Row>
-            {/*<Card
-                    type="inner"
-                    title={"Today shifts"}
-                    style={{marginTop: 16}}
-                >
-
-                </Card>*/}
         </Card>
     );
 };

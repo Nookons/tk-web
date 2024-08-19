@@ -18,7 +18,7 @@ import {
 } from "./utils/consts";
 import Link from "antd/es/typography/Link";
 import { useAppDispatch, useAppSelector } from "./hooks/storeHooks";
-import { fetchRobots } from "./store/reducers/Robots";
+import { fetchAndSubscribeRobots } from "./store/reducers/Robots";
 import SignIn from "./pages/SignIn/SignIn";
 import { fetchEmployers } from "./store/reducers/Employers";
 
@@ -56,7 +56,7 @@ const App = () => {
     } = theme.useToken();
 
     useEffect(() => {
-        dispatch(fetchRobots());
+        dispatch(fetchAndSubscribeRobots());
         dispatch(fetchEmployers());
     }, [dispatch]);
 
