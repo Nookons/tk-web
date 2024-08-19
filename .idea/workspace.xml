@@ -5,21 +5,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bf85fa37-ba31-4855-bf1f-a13f544e11d1" name="Changes" comment="new">
-      <change afterPath="$PROJECT_DIR$/src/pages/Home/TodayTasks/RobotsStatus.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/pages/Home/TodayTasks/TodayTasks.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/pages/Home/TomorowWork.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/pages/Robot/Robot.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/utils/RobotRemove.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Header/Header.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Header/Header.module.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Header/Header.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Header/Header.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/Home/Home.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Home/Home.module.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/Home/Home.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Home/Home.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/Home/TodayWork.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Home/TodayWork.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/assets/logo.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/src/assets/logo.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Employer/Employer.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Employer/Employer.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Home/TodayTasks/RobotsStatus.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Home/TodayTasks/RobotsStatus.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Home/TomorowWork.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Home/TomorowWork.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Robot/Robot.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Robot/Robot.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/RobotsInspection/RobotsFilter.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/RobotsInspection/RobotsFilter.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/RobotsInspection/RobotsInspection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/RobotsInspection/RobotsInspection.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pages/RobotsInspection/RobotsList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/RobotsInspection/RobotsList.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/routes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/store/reducers/User.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/store/reducers/User.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/types/Employer.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/Employer.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/consts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/consts.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/SignIn/SignIn.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/SignIn/SignIn.module.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/SignIn/SignIn.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/SignIn/SignIn.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/store/reducers/Robots.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/store/reducers/Robots.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/Robot.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/Robot.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -72,6 +72,7 @@
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;npm.start.executor&quot;: &quot;Run&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;configurable.group.build&quot;,
     &quot;ts.external.directory.path&quot;: &quot;C:\\Apps\\tk-web\\node_modules\\typescript\\lib&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
@@ -145,6 +146,17 @@
       <workItem from="1723696040853" duration="7794000" />
       <workItem from="1723712109651" duration="2636000" />
       <workItem from="1723717616680" duration="7660000" />
+      <workItem from="1723781129178" duration="7529000" />
+      <workItem from="1723789818583" duration="5729000" />
+      <workItem from="1723806134448" duration="4977000" />
+      <workItem from="1723811956578" duration="60000" />
+      <workItem from="1723869435588" duration="4456000" />
+      <workItem from="1723873971459" duration="362000" />
+      <workItem from="1723874351536" duration="3960000" />
+      <workItem from="1723879939881" duration="327000" />
+      <workItem from="1723880574056" duration="3140000" />
+      <workItem from="1723886060222" duration="7900000" />
+      <workItem from="1723897009471" duration="2923000" />
     </task>
     <servers />
   </component>

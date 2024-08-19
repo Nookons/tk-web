@@ -37,7 +37,7 @@ article {
 }
 
 p {
-  font-size: clamp(1rem, 2vw + 0.5rem, 1.25rem);
+  font-size: clamp(14px, 14px, 1.25rem);
 }
 
 span {

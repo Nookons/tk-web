@@ -10,9 +10,7 @@ import {
     Row,
     Col,
     Button,
-    Dropdown,
     Menu,
-    Timeline,
     Spin
 } from 'antd';
 import dayjs from 'dayjs';
@@ -21,17 +19,6 @@ import { IEmployer } from '../../types/Employer';
 import { useShiftsForEmployer } from '../../hooks/useShiftsForEmployer';
 
 dayjs.extend(relativeTime);
-
-interface IShift {
-    date: string;
-    type: string;
-}
-
-interface ITimelineItem {
-    children: string;
-    key: string | number;
-    color: string;  // Добавляем цвет для точки
-}
 
 const Employer: React.FC = () => {
     const location = useLocation();
@@ -58,7 +45,6 @@ const Employer: React.FC = () => {
             }
         } catch (error) {
             message.error('Error fetching document');
-            console.error('Error fetching employer data:', error);
         } finally {
             setLoading(false);
         }

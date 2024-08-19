@@ -3,7 +3,6 @@ import { collection, onSnapshot, query, doc } from "firebase/firestore";
 import { db } from "../../firebase";
 import { IRobot } from "../../types/Robot";
 
-// Define the initial state
 type ItemsState = {
     items: IRobot[];
     loading: boolean;
@@ -16,25 +15,20 @@ const initialState: ItemsState = {
     error: undefined,
 };
 
-// Async thunk for fetching robots from Firestore
 export const fetchRobots = createAsyncThunk<IRobot[], undefined, { rejectValue: string }>(
     'items/fetchRobots',
     async (_, { rejectWithValue }) => {
         try {
-            const q = query(collection(db, "robots_check"));
-
             return new Promise<IRobot[]>((resolve, reject) => {
-                const unsubscribe = onSnapshot(doc(db, "robots_check", "robot_array"), (doc) => {
-                    if (doc.exists()) {
-                        resolve(doc.data().array as IRobot[]);
-                    } else {
-                        reject("Document does not exist");
-                    }
-                }, (error) => {
-                    reject(error.message);
+                const q = query(collection(db, "robotInspections"));
+                const unsubscribe = onSnapshot(q, (querySnapshot) => {
+                    const robots: IRobot[] = [];
+                    querySnapshot.forEach((doc) => {
+                        robots.push(doc.data() as IRobot);
+                    });
+                    resolve(robots)
                 });
 
-                // Unsubscribe from Firestore listener when promise settles
                 return () => unsubscribe();
             });
         } catch (error) {
@@ -52,7 +46,7 @@ const robotSlice = createSlice({
             const filteredRobots = state.items.filter(item => item.robot_id !== action.payload.robot_id);
             state.items = [...filteredRobots, action.payload];
         },
-        removeRobot: (state, action: PayloadAction<number>) => {
+        removeRobot: (state, action: PayloadAction<string>) => {
             state.items = state.items.filter(item => item.robot_id !== action.payload);
         },
     },

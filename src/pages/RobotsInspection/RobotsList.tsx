@@ -1,14 +1,10 @@
-import React, {FC, useEffect, useState} from 'react';
-import { collection, query, onSnapshot, setDoc, doc, updateDoc } from "firebase/firestore";
+import React, {FC, useState} from 'react';
+import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase";
-import {Badge, Button, Card, Descriptions, Divider, List, message, Modal, Pagination} from "antd";
+import {Badge, Button, Descriptions, Divider, List, message, Modal, Pagination, QRCode} from "antd";
 import dayjs from "dayjs";
 import {
-    CheckSquareOutlined,
-    ClockCircleOutlined,
-    CloseCircleOutlined,
     DeleteOutlined, ExpandAltOutlined,
-    RobotOutlined
 } from "@ant-design/icons";
 import { IRobot } from "../../types/Robot";
 import { useAppDispatch, useAppSelector } from "../../hooks/storeHooks";
@@ -31,11 +27,8 @@ const getCondition = (value: string) => {
     }
 }
 
-interface RobotsListProps {
-    robot_id: number
-}
 
-const RobotsList: FC<RobotsListProps> = (robot_id) => {
+const RobotsList: FC = () => {
     const navigate = useNavigate();
     const data = useAppSelector(state => state.robots.items);
     const dispatch = useAppDispatch();
@@ -136,12 +129,12 @@ const RobotsList: FC<RobotsListProps> = (robot_id) => {
                         {
                             key: '3',
                             label: 'Updated',
-                            children: `${dayjs(item.date).format("dddd, MMMM DD, YYYY [at] HH:mm:ss")}`,
+                            children: `${dayjs(item.update_time).format("dddd, MMMM DD, YYYY [at] HH:mm:ss")}`,
                         },
                         {
                             key: '4',
                             label: 'Notes',
-                            children: `${item.remarks ? item.remarks : "Don't have any notes"}`,
+                            children: `${item.note ? item.note : "Don't have any notes"}`,
                         },
                         {
                             key: '5',

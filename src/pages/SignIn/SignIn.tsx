@@ -8,12 +8,15 @@ import dayjs from 'dayjs';
 import { IEmployer } from '../../types/Employer';
 import { db } from '../../firebase';
 import styles from './SignIn.module.css';
+import {MaskedInput} from "antd-mask-input";
 
 const SignIn: React.FC = () => {
     const dispatch = useDispatch();
     const [form] = Form.useForm();
     const isCurrentUser = useAppSelector(state => state.currentUser.status);
     const [loading, setLoading] = useState(false);
+
+    const cellphoneMask = '+48 (000) 000-000';
 
     useEffect(() => {
         const autoLogin = async () => {
@@ -42,8 +45,9 @@ const SignIn: React.FC = () => {
 
     const getUser = async (data: any) => {
         setLoading(true);
+
         try {
-            const docRef = doc(db, "user_accounts", data.username);
+            const docRef = doc(db, "user_accounts", data.username.replace(/[+\-()\s]/g, ""));
             const docSnap = await getDoc(docRef);
 
             console.log(docSnap.data());
@@ -111,21 +115,13 @@ const SignIn: React.FC = () => {
                 <Form layout="horizontal" hideRequiredMark form={form}>
                     <Row gutter={16}>
                         <Col span={24}>
-                            <h6>Please enter your login details below</h6>
-                            <Divider />
-                        </Col>
-                    </Row>
-                    <Row gutter={16}>
-                        <Col span={24}>
                             <Form.Item
                                 name="username"
-                                label="Username"
+                                label="Phone Number"
                                 rules={[{ required: true, message: "Username can't be empty" }]}
                             >
-                                <Input
-                                    style={{ width: "100%" }}
-                                    type="text"
-                                    placeholder="Please enter username"
+                                <MaskedInput
+                                    mask={cellphoneMask}
                                 />
                             </Form.Item>
                         </Col>

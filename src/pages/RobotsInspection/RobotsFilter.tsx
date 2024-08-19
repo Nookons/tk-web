@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import Radio from "antd/es/radio";
 import { CheckSquareOutlined, ClockCircleOutlined, CloseCircleOutlined, RobotOutlined } from "@ant-design/icons";
 import { IRobot } from "../../types/Robot";
-import dayjs from "dayjs";
 
 interface RobotsFilterProps {
     data: IRobot[];
@@ -20,7 +19,7 @@ const RobotsFilter: React.FC<RobotsFilterProps> = ({ data, setFilteredArray }) =
     useEffect(() => {
         let filteredData: IRobot[];
 
-        const sortByDate = (a: IRobot, b: IRobot) => b.date - a.date;
+        const sortByDate = (a: IRobot, b: IRobot) => b.update_time - a.update_time;
 
         switch (filterValue) {
             case "inspected":

@@ -1,81 +1,62 @@
-import React, {useEffect, useState, useMemo} from 'react';
-import {Card, Divider, List, message, Row, Statistic, Tag, Timeline} from 'antd';
+import React, {useEffect, useState} from 'react';
+import {Card, Divider, Row, Statistic, Tag} from 'antd';
 import dayjs from 'dayjs';
 import {useFetchShifts} from '../../hooks/useFetchShifts';
-import {useFetchEmployees} from '../../hooks/useFetchEmploers';
 import {IEmployer} from '../../types/Employer';
 import Col from "antd/es/grid/col";
-import {ExpandAltOutlined, MehOutlined, MoonOutlined, SmileOutlined, SunOutlined} from "@ant-design/icons";
+import {ExpandAltOutlined, MoonOutlined, SmileOutlined, SunOutlined} from "@ant-design/icons";
 import {useNavigate} from "react-router-dom";
 import {EMPLOYER_ROUTE} from "../../utils/consts";
+import {useAppSelector} from "../../hooks/storeHooks";
 
 const TodayWork = () => {
     const navigate = useNavigate();
-    const employersData = useFetchEmployees();
-    const shiftsData = useFetchShifts();
-    const [shifts, setShifts] = useState({
-        dayShiftData: [] as IEmployer[],
-        nightShiftData: [] as IEmployer[],
-        dayOffData: [] as IEmployer[],
-    });
 
-    const current_date = dayjs().add(1, 'day').format("dddd, MMMM DD, YYYY");
+    // Используем состояния для хранения данных смен
+    const [dayResult, setDayResult] = useState<IEmployer[]>([]);
+    const [nightResult, setNightResult] = useState<IEmployer[]>([]);
+    const [dayOffResult, setDayOffResult] = useState<IEmployer[]>([]);
 
-    // Memoize the current date to ensure it doesn't change on re-renders
-    const currentDate = useMemo(() => dayjs().add(1, "day").format('MM-DD'), []);
+    const allShiftsData = useFetchShifts();
+    const allEmployersData = useAppSelector(state => state.employers.items);
+
+    const tomorrowDate = dayjs().add(1, 'day').format("dddd, MMMM DD, YYYY");
 
     useEffect(() => {
-        if (!employersData || !shiftsData) return;
+        // Временные массивы для накопления данных
+        const tempDayResult: IEmployer[] = [];
+        const tempNightResult: IEmployer[] = [];
+        const dayOffResult: IEmployer[] = [];
 
-        const {employees} = employersData;
-        const {shifts} = shiftsData;
+        allShiftsData.shifts.forEach(userShifts => {
+            const tomorrowShift = userShifts.shifts.find(shift =>
+                dayjs(shift.date).format("dddd, MMMM DD, YYYY") === tomorrowDate
+            );
+            const needWorker = allEmployersData.find(employer => employer.id === userShifts.employer);
 
-        const dayShiftData: IEmployer[] = [];
-        const nightShiftData: IEmployer[] = [];
-
-        // Create a map for quick lookup
-        const employeeShiftMap = new Map<string, string>();
-
-        shifts.forEach(shift => {
-            shift.shifts.forEach(employerShift => {
-                if (dayjs(employerShift.date).add(1, "day").format('MM-DD') === currentDate && shift.employer) {
-                    employeeShiftMap.set(shift.employer.toString(), employerShift.type);
+            if (tomorrowShift && needWorker) {
+                switch (tomorrowShift.type) {
+                    case "Day":
+                        tempDayResult.push(needWorker);
+                        break;
+                    case "Night":
+                        tempNightResult.push(needWorker);
+                        break;
+                    default:
+                        break;
                 }
-            });
-        });
-
-        employees.forEach(employer => {
-            const shiftType = employeeShiftMap.get(employer.id.toString());
-            if (shiftType === 'Day') {
-                dayShiftData.push(employer);
-            } else if (shiftType === 'Night') {
-                nightShiftData.push(employer);
+            } else if (needWorker) {
+                dayOffResult.push(needWorker)
             }
         });
 
-        const dayOffData = employees.filter(
-            employee => !dayShiftData.some(day => day.id === employee.id) &&
-                !nightShiftData.some(night => night.id === employee.id)
-        );
-
-        // Only update state if the computed values have actually changed
-        setShifts(prevShifts => {
-            const hasChanged =
-                JSON.stringify(prevShifts.dayShiftData) !== JSON.stringify(dayShiftData) ||
-                JSON.stringify(prevShifts.nightShiftData) !== JSON.stringify(nightShiftData) ||
-                JSON.stringify(prevShifts.dayOffData) !== JSON.stringify(dayOffData);
-
-            return hasChanged ? {
-                dayShiftData,
-                nightShiftData,
-                dayOffData
-            } : prevShifts;
-        });
-
-    }, [employersData, shiftsData, currentDate]);
+        // Обновляем состояния
+        setDayResult(tempDayResult);
+        setNightResult(tempNightResult);
+        setDayOffResult(dayOffResult);
+    }, [allShiftsData, allEmployersData, tomorrowDate]);
 
     const renderList = (title: string, data: IEmployer[]) => {
-
         return data.map((employer) => {
             const onUserClick = () => {
                 const params = new URLSearchParams({id: employer.id.toString()});
@@ -85,13 +66,12 @@ const TodayWork = () => {
             return (
                 <Tag
                     key={employer.id}
-                    onClose={onUserClick}
                     style={{
                         maxWidth: '100%',
                         backgroundColor: employer.position === 'Leader' ? '#a1ffff' : '',
                     }}
                     closable={true}
-                    closeIcon={<ExpandAltOutlined/>}
+                    closeIcon={<ExpandAltOutlined onClick={onUserClick}/>}
                 >
                     {employer.firstName} {employer.lastName}
                 </Tag>
@@ -100,34 +80,27 @@ const TodayWork = () => {
     };
 
     return (
-        <Card title={<Divider>Tomorrow {current_date}</Divider>}>
+        <Card title={<Divider>Tomorrow {tomorrowDate}</Divider>}>
             <Row gutter={4} justify={"center"} wrap={true}>
                 <Col style={{minWidth: "200px", marginTop: 4}} span={8}>
                     <Card>
-                        <Statistic prefix={<SunOutlined/>} title="Day" value={shifts.dayShiftData.length}/>
-                        {renderList('Day Shift', shifts.dayShiftData)}
+                        <Statistic prefix={<SunOutlined/>} title="Day" value={dayResult.length}/>
+                        {renderList('Day Shift', dayResult)}
                     </Card>
                 </Col>
                 <Col style={{minWidth: "200px", marginTop: 4}} span={8}>
                     <Card>
-                        <Statistic prefix={<MoonOutlined/>} title="Night" value={shifts.nightShiftData.length}/>
-                        {renderList('Day Shift', shifts.nightShiftData)}
+                        <Statistic prefix={<MoonOutlined/>} title="Night" value={nightResult.length}/>
+                        {renderList('Night Shift', nightResult)}
                     </Card>
                 </Col>
                 <Col style={{minWidth: "200px", marginTop: 4}} span={8}>
                     <Card>
-                        <Statistic prefix={<SmileOutlined/>} title="Day Off" value={shifts.dayOffData.length}/>
-                        {renderList('Day Shift', shifts.dayOffData)}
+                        <Statistic prefix={<SmileOutlined/>} title="Day Off" value={dayOffResult.length}/>
+                        {renderList('Day Shift', dayOffResult)}
                     </Card>
                 </Col>
             </Row>
-            {/*<Card
-                    type="inner"
-                    title={"Today shifts"}
-                    style={{marginTop: 16}}
-                >
-
-                </Card>*/}
         </Card>
     );
 };

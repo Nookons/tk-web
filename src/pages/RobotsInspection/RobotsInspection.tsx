@@ -1,125 +1,220 @@
-import React, {useEffect, useState} from 'react';
-import {
-    Button,
-    DatePicker,
-    DatePickerProps, Divider,
-    Form,
-    GetProps,
-    Input,
-    message,
-    RadioChangeEvent,
-    Switch,
-    Upload,
-    UploadProps
-} from "antd";
-import Radio from "antd/es/radio";
-import {PlusOutlined, UploadOutlined} from "@ant-design/icons";
-import dayjs from "dayjs";
+import React, {useState} from 'react';
+import {Cascader, Form, Input, Radio, message} from "antd";
+import {useForm} from "antd/es/form/Form";
+import Button from "antd/es/button";
+import {MaskedInput} from "antd-mask-input";
+import {doc, getDoc, setDoc, updateDoc, arrayUnion} from 'firebase/firestore';
 import {db} from "../../firebase";
-import {doc, setDoc, arrayUnion, updateDoc} from "firebase/firestore";
-import RobotsList from "./RobotsList";
+import dayjs from "dayjs";
 import {useAppDispatch, useAppSelector} from "../../hooks/storeHooks";
-import {addRobot, removeRobot} from "../../store/reducers/Robots";
+import RobotsList from "./RobotsList";
+import {addRobot} from "../../store/reducers/Robots";
+import {IRobot} from "../../types/Robot";
+import TextArea from "antd/es/input/TextArea";
 
-type OTPProps = GetProps<typeof Input.OTP>;
-
-
-const RobotsInspection = () => {
+const RobotsInspection: React.FC = () => {
     const dispatch = useAppDispatch();
-    const robots_data = useAppSelector(state => state.robots.items)
-    const [robot_id, setRobot_id] = useState<number>(0);
-    const [conditionValue, setConditionValue] = useState<string>("");
-    const [noteValue, setNoteValue] = useState("");
+    const user = useAppSelector(state => state.currentUser.user)
+    const [form] = useForm();
+    const [robotCondition, setRobotCondition] = useState<string>('good');
+    const robot_id_mask = "(00) 00-000";
 
-    const onChange: OTPProps['onChange'] = (text) => {
-        setRobot_id(Number(text));
-    };
+    const onFormFinish = async (values: any) => {
 
-    const sharedProps: OTPProps = {
-        onChange,
-    };
-
-    const onChangeRadio = (e: RadioChangeEvent) => {
-        setConditionValue(e.target.value)
-    };
-
-    const onSaveClick = async () => {
-        if (!robot_id || robot_id <= 1) {
-            message.error("You don't have any robot id");
-            return;
+        const problem_component = {
+            time: dayjs().valueOf(),
+            component: values.component || '',
+            username: user && user.firstName + ' ' + user.lastName || '',
+            note: values.note || '',
+            id: Date.now()
         }
 
-        if (!conditionValue || conditionValue.length < 1) {
-            message.error("You don't have any condition value");
-            return;
-        }
-
-        message.info("Okay, here we try to upload your data");
-        const filtered = robots_data.filter(item => item.robot_id !== robot_id);
+        const data = {
+            update_time: dayjs().valueOf(),
+            robot_id: values.robot_id.replace(/\D/g, ''),  // Убираем все символы, кроме цифр
+            condition: values.condition || '',
+            username: user && user.firstName + ' ' + user.lastName || '',
+        };
 
         try {
-            const ref = doc(db, "robots_check", "robot_array");
+            const docRef = doc(db, "robotInspections", data.robot_id);  // Ссылка на документ в Firestore
+            const docSnap = await getDoc(docRef);  // Проверяем, существует ли документ
 
-            const template = {
-                robot_id: robot_id,
-                condition: conditionValue,
-                date: dayjs().valueOf(),
-                remarks: noteValue,
+            if (docSnap.exists()) {
+                if (data.condition === 'bad') {
+                    await updateDoc(docRef, {
+                        ...data,
+                        problem_component: arrayUnion(problem_component),
+                    });
+                } else {
+                    if (docSnap.data().condition === "bad") {
+                        throw new Error("You need fix robot first")
+                    } else {
+                        await updateDoc(docRef, {
+                            ...data,
+                        });
+                    }
+                }
+            } else {
+                await setDoc(docRef, data);
             }
 
-            dispatch(addRobot(template));
-
-            await updateDoc(ref, {
-                array: [...filtered, template]
-            });
-            setNoteValue("")
-            message.success("Robot successfully add");
-        } catch (error) {
-            message.error("Failed");
+            form.resetFields()
+            dispatch(addRobot(data as IRobot))
+            message.success("Inspection data saved successfully!");
+        } catch (err) {
+            err && message.error(err.toString());
         }
     };
-
 
     return (
         <div>
-            <Form style={{
-                display: "flex",
-                flexWrap: "wrap",
-                gap: 14,
-                justifyContent: "space-between",
-            }}>
-                <Form.Item label="Robot ID" name="input">
-                    <Input.OTP length={7} formatter={(str) => str.toUpperCase()} {...sharedProps} />
+            <Form
+                form={form}
+                name="robot_inspection"
+                initialValues={{remember: true}}
+                onFinish={onFormFinish}
+                style={{maxWidth: "98%", display: "flex",justifyContent: "space-between", flexWrap: "wrap" ,gap: 14}}
+                variant={"outlined"}
+              >
+                <Form.Item
+                    label="Robot ID"
+                    name="robot_id"
+                    rules={[{required: true, message: "Robot ID can't be empty"}]}
+                >
+                    <MaskedInput mask={robot_id_mask}/>
                 </Form.Item>
-                <Radio.Group value={conditionValue} onChange={onChangeRadio} buttonStyle="solid">
-                    <Radio.Button value="good">Good</Radio.Button>
-                    <Radio.Button value="bad">Bad</Radio.Button>
-                    <Radio.Button value="not_inspected">Not inspected</Radio.Button>
-                </Radio.Group>
-                <Button onClick={onSaveClick} type={"primary"}>Save</Button>
-                {conditionValue === "bad" &&
-                    <div style={{width: '100%', display: 'grid', gridTemplateColumns: "1fr 1fr", alignItems: "center"}}>
-                        <Form.Item
-                            style={{minWidth: "50%"}}
-                            label="Please load picture of problems"
-                            name="upload"
-                            valuePropName="fileList"
-                            getValueFromEvent={(e) => e.fileList} // Ensures that fileList is properly handled
-                        >
-                            <Upload>
-                                <Button icon={<UploadOutlined/>}>Click to Upload</Button>
-                            </Upload>
+
+                <Form.Item
+                    label="Robot Condition"
+                    name="condition"
+                    rules={[{required: true, message: "Condition can't be empty"}]}
+                >
+                    <Radio.Group onChange={(e) => setRobotCondition(e.target.value)}>
+                        <Radio value="good">Good</Radio>
+                        <Radio value="bad">Bad</Radio>
+                        <Radio value="not_inspected">Not Inspected</Radio>
+                    </Radio.Group>
+                </Form.Item>
+
+                {robotCondition === 'bad' && (
+                    <>
+                        <Form.Item style={{width: "100%"}} label="Notes" name="note">
+                            <TextArea rows={2}/>
                         </Form.Item>
-                        <Input
-                            value={noteValue}
-                            multiple
-                            placeholder={"Please write here notes why robot is broken"}
-                            onChange={(event) => setNoteValue(event.target.value)}
-                        />
-                    </div>
-                }
+
+
+                        <Form.Item
+                            label="Component Selection"
+                            name="component"
+                            rules={[{required: true, message: "Please select a component!"}]}
+                        >
+                            <Cascader
+                                style={{minWidth: 320}}
+                                options={[
+                                    {
+                                        value: "Wheels",
+                                        label: "Wheels",
+                                        children: [
+                                            {
+                                                value: "00-10-10053",
+                                                label: "Left Wheels (00-10-10053)",
+                                            },
+                                            {
+                                                value: "00-10-10054",
+                                                label: "Right Wheels (00-10-10054)",
+                                            },
+                                        ],
+                                    },
+                                    {
+                                        value: "Motors",
+                                        label: "Motors",
+                                        children: [
+                                            {
+                                                value: "UP Motor",
+                                                label: "UP Motor",
+                                                children: [
+                                                    {
+                                                        value: "00-10-10055",
+                                                        label: "00-10-10055",
+                                                    },
+                                                    {
+                                                        value: "00-10-10056",
+                                                        label: "00-10-10056",
+                                                    },
+                                                    {
+                                                        value: "00-10-10057",
+                                                        label: "00-10-10057",
+                                                    },
+                                                ],
+                                            },
+                                            {
+                                                value: "Turn motors",
+                                                label: "Turn motors",
+                                                children: [
+                                                    {
+                                                        value: "00-10-10058",
+                                                        label: "00-10-10058",
+                                                    },
+                                                    {
+                                                        value: "00-10-10059",
+                                                        label: "00-10-10059",
+                                                    },
+                                                    {
+                                                        value: "00-10-10060",
+                                                        label: "00-10-10060",
+                                                    },
+                                                ],
+                                            },
+                                        ],
+                                    },
+                                    {
+                                        value: "Platform",
+                                        label: "Platform",
+                                        children: [
+                                            {
+                                                value: "UP Motor",
+                                                label: "UP Motor",
+                                                children: [
+                                                    {
+                                                        value: "00-11-10055",
+                                                        label: "00-11-10055",
+                                                    },
+                                                    {
+                                                        value: "00-12-10056",
+                                                        label: "00-12-10056",
+                                                    },
+                                                    {
+                                                        value: "00-13-10057",
+                                                        label: "00-13-10057",
+                                                    },
+                                                ],
+                                            },
+                                            {
+                                                value: "Rotate Motor",
+                                                label: "Rotate Motor",
+                                                children: [
+                                                    {
+                                                        value: "13-11-10055",
+                                                        label: "13-11-10055",
+                                                    },
+                                                ],
+                                            },
+                                        ],
+                                    },
+                                ]}
+                            />
+                        </Form.Item>
+                    </>
+                )}
+
+                <Form.Item wrapperCol={{offset: 8, span: 16}}>
+                    <Button type="primary" htmlType="submit">
+                        Submit
+                    </Button>
+                </Form.Item>
             </Form>
-            <RobotsList robot_id={robot_id}/>
+            <RobotsList />
         </div>
     );
 };
